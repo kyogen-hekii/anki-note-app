@@ -5,6 +5,8 @@ import { Provider } from 'react-redux'
 import { ConnectedRouter } from 'connected-react-router'
 import configureStore, { history } from './store'
 
+import DummyPage from './dev/DummyPage'
+
 const store = configureStore()
 
 function App() {
@@ -12,12 +14,22 @@ function App() {
     <Provider store={store}>
       <ConnectedRouter history={history}>
         <Switch>
-          <Route exact path="/" render={() => <div>hello</div>} />
+          <Route exact path="/login" component={DummyPage} />
+        </Switch>
+        <Switch>
+          <Route exact path="/register" component={DummyPage} />
+        </Switch>
+        <Switch>
+          <Route exact path="/" component={DummyPage} />
+        </Switch>
+        <Switch>
+          <Route exact path="/home" component={DummyPage} />
+        </Switch>
+        <Switch>
+          <Route exact path="/profile" component={DummyPage} />
         </Switch>
       </ConnectedRouter>
     </Provider>
   )
 }
-
 export default App
-// <Route exact path="/" component={hello}/>
