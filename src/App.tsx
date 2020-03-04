@@ -1,14 +1,21 @@
 import React from 'react'
 import './App.css'
-import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
+import { Provider } from 'react-redux'
+import { ConnectedRouter } from 'connected-react-router'
+import configureStore, { history } from './store'
+
+const store = configureStore()
 
 function App() {
   return (
-    <BrowserRouter>
-      <Switch>
-        <Route exact path="/" render={() => <div>hello</div>} />
-      </Switch>
-    </BrowserRouter>
+    <Provider store={store}>
+      <ConnectedRouter history={history}>
+        <Switch>
+          <Route exact path="/" render={() => <div>hello</div>} />
+        </Switch>
+      </ConnectedRouter>
+    </Provider>
   )
 }
 
