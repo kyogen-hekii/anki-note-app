@@ -6,6 +6,7 @@ import { ConnectedRouter } from 'connected-react-router'
 import configureStore, { history } from './store'
 
 import DummyPage from './dev/DummyPage'
+import HomePage from './pages/Home/HomePage'
 
 const store = configureStore()
 
@@ -23,7 +24,7 @@ function App() {
           <Route exact path="/" component={DummyPage} />
         </Switch>
         <Switch>
-          <Route exact path="/home" component={DummyPage} />
+          <Route exact path="/home" component={HomePage} />
         </Switch>
         <Switch>
           <Route exact path="/profile" component={DummyPage} />
