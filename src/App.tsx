@@ -22,7 +22,7 @@ function App() {
           <Route exact path="/register" component={DummyPage} />
         </Switch>
         <Switch>
-          <Route exact path="/" component={DummyPage} />
+          <Route exact path="/" component={HomePage} />
         </Switch>
         <Switch>
           <Route exact path="/home" component={HomePage} />
