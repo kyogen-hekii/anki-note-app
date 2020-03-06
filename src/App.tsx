@@ -13,6 +13,7 @@ const store = configureStore()
 function App() {
   return (
     <Provider store={store}>
+      <div>Header</div>
       <ConnectedRouter history={history}>
         <Switch>
           <Route exact path="/login" component={DummyPage} />
@@ -21,7 +22,7 @@ function App() {
           <Route exact path="/register" component={DummyPage} />
         </Switch>
         <Switch>
-          <Route exact path="/" component={DummyPage} />
+          <Route exact path="/" component={HomePage} />
         </Switch>
         <Switch>
           <Route exact path="/home" component={HomePage} />
