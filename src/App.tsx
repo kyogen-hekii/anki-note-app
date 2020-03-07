@@ -7,6 +7,7 @@ import configureStore, { history } from './store'
 
 import DummyPage from './dev/DummyPage'
 import HomePage from './pages/Home/HomePage'
+import NotePage from './pages/Note/NotePage'
 
 const store = configureStore()
 
@@ -26,6 +27,9 @@ function App() {
         </Switch>
         <Switch>
           <Route exact path="/home" component={HomePage} />
+        </Switch>
+        <Switch>
+          <Route exact path="/note" component={NotePage} />
         </Switch>
         <Switch>
           <Route exact path="/profile" component={DummyPage} />
