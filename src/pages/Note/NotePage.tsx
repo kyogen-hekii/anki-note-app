@@ -2,8 +2,13 @@
 import React, { Component } from 'react'
 import SimpleFetch from '../../api/SimpleFetch'
 import { getUser } from '../../api/queries'
+import { connect } from 'react-redux'
+import { openModal } from '../../reducers/modal'
 
-export default class HomePage extends Component {
+type Props = {
+  openModal: Function
+}
+class NotePage extends Component<Props> {
   // #region state
   // TODO: local stateをglobal stateに昇格
   state: any = {
@@ -28,14 +33,15 @@ export default class HomePage extends Component {
   handleClickMemo = () => {
     this.setState({ currentTab: 'memo' })
   }
-  handleClick1on1 = () => {
-    this.setState({ currentTab: '1:1' })
+  handleClickVocabrary = () => {
+    this.setState({ currentTab: 'vocabrary' })
   }
   handleClickCodepen = () => {
     this.setState({ currentTab: 'codepen' })
   }
   handleClickAdd = () => {
     // TODO: popup modal
+    this.props.openModal()
   }
   // #endregion
 
@@ -59,17 +65,40 @@ export default class HomePage extends Component {
 
         <div style={{ display: 'flex' }}>
           <button onClick={this.handleClickMemo}>memo</button>
-          <button onClick={this.handleClick1on1}>1:1</button>
+          <button onClick={this.handleClickVocabrary}>vocabrary</button>
           <button onClick={this.handleClickCodepen}>codepen</button>
         </div>
-        {currentTab === 'memo' && <div>memo</div>}
-        {currentTab === '1:1' && <div>1:1</div>}
-        {currentTab === 'codepen' && <div>codepen</div>}
+        {currentTab === 'memo' && (
+          <>
+            <button>create</button>
+            <div>content</div>
+          </>
+        )}
+        {currentTab === 'vocabrary' && (
+          <>
+            <button>create</button>
+            <div>vocabrary note</div>
+          </>
+        )}
+        {currentTab === 'codepen' && (
+          <>
+            <button>create</button>
+            <div>codepen</div>
+          </>
+        )}
         <div>
-          <button onClick={this.handleClickPopUser}>私のユーザー名は?</button>
+          <button onClick={this.handleClickAdd}>私のユーザー名は?</button>
         </div>
       </>
     )
   }
   // #endregion
 }
+
+const mapStateToProps = (state: any) => ({})
+
+const mapDispatchToProps = {
+  openModal,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(NotePage)
