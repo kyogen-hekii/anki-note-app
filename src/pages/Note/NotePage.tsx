@@ -4,11 +4,14 @@ import SimpleFetch from '../../api/SimpleFetch'
 import { getUser } from '../../api/queries'
 import { connect } from 'react-redux'
 import { openModal } from '../../reducers/modal'
+import { saveToStore } from '../../utils/createVariantReducer'
+import _ from 'lodash'
 
 type Props = {
   history: any
   selectedData: any
   openModal: Function
+  saveToStore: Function
 }
 class NotePage extends Component<Props> {
   // constructor(props: any) {
@@ -50,6 +53,15 @@ class NotePage extends Component<Props> {
   handleClickAdd = () => {
     this.props.openModal()
   }
+  handleClickCreateMemo = () => {
+    const { note } = this.props.selectedData
+    this.props.saveToStore('selectedData', 'note', { ...note, content: 'please input' })
+  }
+  handleChangeMemo = (e: any) => {
+    const { note } = this.props.selectedData
+    const content = e.target?.value
+    this.props.saveToStore('selectedData', 'note', { ...note, content })
+  }
   // #endregion
 
   // #region render
@@ -81,8 +93,16 @@ class NotePage extends Component<Props> {
         </div>
         {currentTab === 'memo' && (
           <>
-            <button>create</button>
-            <div>content</div>
+            {_.isEmpty(note?.content) ? (
+              <button onClick={this.handleClickCreateMemo}>create</button>
+            ) : (
+              <textarea
+                cols={30}
+                rows={10}
+                onChange={this.handleChangeMemo}
+                value={note?.content}
+              ></textarea>
+            )}
           </>
         )}
         {currentTab === 'vocabrary' && (
@@ -111,6 +131,7 @@ const mapStateToProps = (state: any) => ({
 })
 
 const mapDispatchToProps = {
+  saveToStore,
   openModal,
 }
 
