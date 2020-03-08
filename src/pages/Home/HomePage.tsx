@@ -1,11 +1,16 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
 import SimpleFetch from '../../api/SimpleFetch'
 import { getUser, getCategories, getNotes } from '../../api/queries'
 import CategoryCard from './components/CategoryCard'
 import NoteItem from './components/NoteItem'
+import { openModal } from '../../reducers/modal'
 
-export default class HomePage extends Component {
+type Props = {
+  openModal: Function
+}
+class HomePage extends Component<Props> {
   // #region state
   // TODO: local stateをglobal stateに昇格
   state: any = {
@@ -42,6 +47,9 @@ export default class HomePage extends Component {
     const selectedNote = note
     this.setState({ selectedNote })
   }
+  handleSetData = () => {
+    this.props.openModal()
+  }
   // #endregion
 
   // #region render
@@ -65,3 +73,10 @@ export default class HomePage extends Component {
   }
   // #endregion
 }
+
+// extends Component<Props>
+const mapStateToProps = (state: any) => ({})
+const mapDispatchToProps = {
+  openModal,
+}
+export default connect(mapStateToProps, mapDispatchToProps)(HomePage)
