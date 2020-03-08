@@ -7,7 +7,7 @@ export default ({ category, onClick }: any) => {
         onClick(category)
       }}
     >
-      {category.name}
+      {category.value}
     </div>
   )
 }

@@ -1,24 +1,26 @@
 import React, { Component } from 'react'
+import Select from 'react-select'
 import { connect } from 'react-redux'
+import _ from 'lodash'
 
 import SimpleFetch from '../../api/SimpleFetch'
 import { getUser, getCategories, getNotes } from '../../api/queries'
-import CategoryCard from './components/CategoryCard'
 import NoteItem from './components/NoteItem'
 import { openModal } from '../../reducers/modal'
+import { saveToStore } from '../../utils/createVariantReducer'
+import { Link } from 'react-router-dom'
 
 type Props = {
+  selectedData: any
+  saveToStore: Function
   openModal: Function
 }
 class HomePage extends Component<Props> {
   // #region state
-  // TODO: local stateをglobal stateに昇格
   state: any = {
     user: {},
-    categories: [],
-    selectedCategory: null,
+    categoryOptions: [],
     notes: [],
-    selectedNotes: null,
   }
   // #endregion
 
@@ -26,26 +28,19 @@ class HomePage extends Component<Props> {
   async componentDidMount() {
     const user = await SimpleFetch(getUser(1))
     this.setState({ user })
-    const categories = await SimpleFetch(getCategories())
-    this.setState({ categories })
+    const categoryOptions = await SimpleFetch(getCategories())
+    this.setState({ categoryOptions })
     const notes = await SimpleFetch(getNotes())
     this.setState({ notes })
   }
   // #endregion
 
   // #region handler
-  handleClickPopUser = () => {
-    // TODO
-    const { user } = this.state
-    window.alert(`my name is ${user.name}`)
+  handleClickCategory = (selectedCategory: any) => {
+    this.props.saveToStore('selectedData', 'category', selectedCategory)
   }
-  handleClickCategory = (category: any) => {
-    const selectedCategory = category
-    this.setState({ selectedCategory })
-  }
-  handleClickNote = (note: any) => {
-    const selectedNote = note
-    this.setState({ selectedNote })
+  handleClickNote = (selectedNote: any) => {
+    this.props.saveToStore('selectedData', 'note', selectedNote)
   }
   handleSetData = () => {
     this.props.openModal()
@@ -54,20 +49,21 @@ class HomePage extends Component<Props> {
 
   // #region render
   render() {
-    const { selectedCategory, categories, selectedNote, notes } = this.state
+    const { category } = this.props.selectedData
+    const { categoryOptions, notes } = this.state
     return (
       <div>
-        {!selectedCategory &&
-          categories.map((c: any) => {
-            return <CategoryCard key={c.id} category={c} onClick={this.handleClickCategory} />
-          })}
-        {selectedCategory &&
+        <Select value={category} onChange={this.handleClickCategory} options={categoryOptions} />
+        {!_.isEmpty(category) &&
           notes
-            .filter((n: any) => n.categoryId === selectedCategory.id)
+            .filter((n: any) => n.categoryId === category.id)
             .map((n: any) => {
-              return <NoteItem key={n.id} note={n} onClick={this.handleClickNote} />
+              return (
+                <Link to="/note">
+                  <NoteItem key={n.id} note={n} onClick={this.handleClickNote} />
+                </Link>
+              )
             })}
-        <button onClick={this.handleClickPopUser}>私のユーザー名は?</button>
       </div>
     )
   }
@@ -75,8 +71,11 @@ class HomePage extends Component<Props> {
 }
 
 // extends Component<Props>
-const mapStateToProps = (state: any) => ({})
+const mapStateToProps = (state: any) => ({
+  selectedData: state.selectedData,
+})
 const mapDispatchToProps = {
+  saveToStore,
   openModal,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(HomePage)

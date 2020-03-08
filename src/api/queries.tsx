@@ -27,11 +27,13 @@ export const getCategories = () => {
   const categories = [
     {
       id: 1,
-      name: 'react',
+      value: 'react',
+      label: 'React',
     },
     {
       id: 2,
-      name: 'vue',
+      value: 'vue',
+      label: 'Vue.js',
     },
   ]
   return categories
