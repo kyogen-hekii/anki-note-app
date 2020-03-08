@@ -6,6 +6,8 @@ import { connect } from 'react-redux'
 import { openModal } from '../../reducers/modal'
 import { saveToStore } from '../../utils/createVariantReducer'
 import _ from 'lodash'
+import ReactDataSheet from 'react-datasheet'
+import 'react-datasheet/lib/react-datasheet.css'
 
 type Props = {
   history: any
@@ -25,6 +27,14 @@ class NotePage extends Component<Props> {
   state: any = {
     user: {},
     currentTab: 'memo',
+    grid: [
+      [
+        { value: 'A', readOnly: true },
+        { value: 'B', readOnly: true },
+      ],
+      [{ value: 1 }, { value: 3 }],
+      [{ value: 2 }, { value: 4 }],
+    ],
   }
   // #endregion
 
@@ -106,10 +116,21 @@ class NotePage extends Component<Props> {
           </>
         )}
         {currentTab === 'vocabrary' && (
-          <>
-            <button>create</button>
-            <div>vocabrary note</div>
-          </>
+          <ReactDataSheet
+            data={this.state.grid}
+            valueRenderer={(cell: any) => {
+              cell.width = 200
+              return cell.value
+            }}
+            onCellsChanged={changes => {
+              const grid = this.state.grid.map((row: any) => [...row])
+              changes.forEach(({ cell, row, col, value }) => {
+                grid[row][col] = { ...grid[row][col], value }
+              })
+              this.setState({ grid })
+            }}
+          />
+          //<ReactDataSheet data={this.state.grid2} valueRenderer={(cell: any) => cell.value} />
         )}
         {currentTab === 'codepen' && (
           <>
