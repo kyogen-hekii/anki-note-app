@@ -6,9 +6,17 @@ import { connect } from 'react-redux'
 import { openModal } from '../../reducers/modal'
 
 type Props = {
+  history: any
+  selectedData: any
   openModal: Function
 }
 class NotePage extends Component<Props> {
+  // constructor(props: any) {
+  //   super(props)
+  //   if (_.isEmpty(props.selectedData?.note)) {
+  //     props.history.push('/home')
+  //   }
+  // }
   // #region state
   // TODO: local stateをglobal stateに昇格
   state: any = {
@@ -40,13 +48,13 @@ class NotePage extends Component<Props> {
     this.setState({ currentTab: 'codepen' })
   }
   handleClickAdd = () => {
-    // TODO: popup modal
     this.props.openModal()
   }
   // #endregion
 
   // #region render
   render() {
+    const { category, note } = this.props.selectedData
     const { currentTab } = this.state
     return (
       <>
@@ -63,6 +71,9 @@ class NotePage extends Component<Props> {
           <button>?</button>
         </div>
 
+        <div>
+          category: {category?.label}, note: {note?.title}
+        </div>
         <div style={{ display: 'flex' }}>
           <button onClick={this.handleClickMemo}>memo</button>
           <button onClick={this.handleClickVocabrary}>vocabrary</button>
@@ -95,10 +106,16 @@ class NotePage extends Component<Props> {
   // #endregion
 }
 
-const mapStateToProps = (state: any) => ({})
+const mapStateToProps = (state: any) => ({
+  selectedData: state.selectedData,
+})
 
 const mapDispatchToProps = {
   openModal,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(NotePage)
+
+// handleClickCategory = (selectedCategory: any) => {
+//   this.props.saveToStore('category', 'category', selectedCategory)
+// }
