@@ -4,7 +4,7 @@ export default ({ note, onClick }: any) => {
   return (
     <div
       onClick={() => {
-        onClick(note.id)
+        onClick(note)
       }}
     >
       {note.title}
