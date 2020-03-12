@@ -58,6 +58,16 @@ class NotePage extends Component<Props> {
         content: 'please input',
       })
     }
+    const { grid } = this.state
+    const plusRowNum = 10 - ((grid.length - 1) % 10)
+
+    const g = grid.concat(
+      [...Array(plusRowNum)].map(() => {
+        return [{ value: '' }, { value: '' }]
+      }),
+    )
+    this.setState({ grid: g })
+    console.log(g)
   }
   // #endregion
 
@@ -65,14 +75,19 @@ class NotePage extends Component<Props> {
   handleClickMemo = () => {
     this.setState({ currentTab: 'memo' })
   }
-  handleClickVocabrary = () => {
-    this.setState({ currentTab: 'vocabrary' })
+  handleClickVocabulary = () => {
+    this.setState({ currentTab: 'vocabulary' })
   }
   handleClickCodepen = () => {
     this.setState({ currentTab: 'codepen' })
   }
   handleClickAdd = () => {
-    this.props.openModal()
+    const { currentTab } = this.state
+    if (currentTab === 'vocabulary') {
+      this.addVocabularyRows()
+    } else {
+      this.props.openModal()
+    }
   }
   handleClickCreateMemo = () => {
     const { note } = this.props.selectedData
@@ -82,6 +97,23 @@ class NotePage extends Component<Props> {
     const { note } = this.props.selectedData
     const content = e.target?.value
     this.props.saveToStore('selectedData', 'note', { ...note, content })
+  }
+  // #endregion
+  // #region private method
+  /**
+   * vocabulary gridの行数を増やす
+   * e.g.) 9→10, 14→20, 20→30
+   */
+  private addVocabularyRows = () => {
+    const { grid } = this.state
+    const plusRowNum = 10 - ((grid.length - 1) % 10)
+
+    const g = grid.concat(
+      [...Array(plusRowNum ? plusRowNum : 10)].map(() => {
+        return [{ value: '' }, { value: '' }]
+      }),
+    )
+    this.setState({ grid: g })
   }
   // #endregion
 
@@ -100,7 +132,7 @@ class NotePage extends Component<Props> {
             flexFlow: 'column',
           }}
         >
-          <button>+</button>
+          <button onClick={this.handleClickAdd}>+</button>
           <button>?</button>
         </div>
 
@@ -109,7 +141,7 @@ class NotePage extends Component<Props> {
         </div>
         <div style={{ display: 'flex' }}>
           <button onClick={this.handleClickMemo}>memo</button>
-          <button onClick={this.handleClickVocabrary}>vocabrary</button>
+          <button onClick={this.handleClickVocabulary}>vocabulary</button>
           <button onClick={this.handleClickCodepen}>codepen</button>
         </div>
         {currentTab === 'memo' && (
@@ -141,7 +173,7 @@ class NotePage extends Component<Props> {
             )}
           </>
         )}
-        {currentTab === 'vocabrary' && (
+        {currentTab === 'vocabulary' && (
           <ReactDataSheet
             data={this.state.grid}
             valueRenderer={(cell: any) => {
