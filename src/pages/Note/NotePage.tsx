@@ -8,6 +8,13 @@ import { saveToStore } from '../../utils/createVariantReducer'
 import _ from 'lodash'
 import ReactDataSheet from 'react-datasheet'
 import 'react-datasheet/lib/react-datasheet.css'
+//@ts-ignore
+import Codepen from 'react-codepen-embed'
+
+const CodepenEmbedded = (props: any) => {
+  const h: string = props.hash || 'JyxeVP'
+  return <Codepen hash={h} user="someone" />
+}
 
 type Props = {
   history: any
@@ -134,13 +141,15 @@ class NotePage extends Component<Props> {
         )}
         {currentTab === 'codepen' && (
           <>
-            <button>create</button>
-            <div>codepen</div>
+            {_.isEmpty(note?.codepenHash) ? (
+              <button onClick={this.handleClickAdd}>create</button>
+            ) : (
+              <div>
+                <CodepenEmbedded hash={note.codepenHash} />
+              </div>
+            )}
           </>
         )}
-        <div>
-          <button onClick={this.handleClickAdd}>私のユーザー名は?</button>
-        </div>
       </>
     )
   }
