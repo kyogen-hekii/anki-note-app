@@ -1,5 +1,5 @@
-// state/cdm/handler/renderが入っている
 import React, { Component } from 'react'
+import Markdown from 'react-markdown'
 import SimpleFetch from '../../api/SimpleFetch'
 import { getUser } from '../../api/queries'
 import { connect } from 'react-redux'
@@ -34,6 +34,7 @@ class NotePage extends Component<Props> {
   state: any = {
     user: {},
     currentTab: 'memo',
+    isInputViewShown: true,
     grid: [
       [
         { value: 'A', readOnly: true },
@@ -49,15 +50,18 @@ class NotePage extends Component<Props> {
   async componentDidMount() {
     const user = await SimpleFetch(getUser(1))
     this.setState({ user })
+    const { note } = this.props.selectedData
+    if (_.isEmpty(note)) {
+      this.props.saveToStore('selectedData', 'note', {
+        ...note,
+        title: 'new',
+        content: 'please input',
+      })
+    }
   }
   // #endregion
 
   // #region handler
-  handleClickPopUser = () => {
-    // TODO
-    const { user } = this.state
-    window.alert(`my name is ${user.name}`)
-  }
   handleClickMemo = () => {
     this.setState({ currentTab: 'memo' })
   }
@@ -84,7 +88,7 @@ class NotePage extends Component<Props> {
   // #region render
   render() {
     const { category, note } = this.props.selectedData
-    const { currentTab } = this.state
+    const { currentTab, isInputViewShown } = this.state
     return (
       <>
         <div
@@ -113,12 +117,27 @@ class NotePage extends Component<Props> {
             {_.isEmpty(note?.content) ? (
               <button onClick={this.handleClickCreateMemo}>create</button>
             ) : (
-              <textarea
-                cols={30}
-                rows={10}
-                onChange={this.handleChangeMemo}
-                value={note?.content}
-              ></textarea>
+              <>
+                <div>
+                  <button
+                    onClick={() => {
+                      this.setState({ isInputViewShown: !isInputViewShown })
+                    }}
+                    style={{ boxSizing: 'border-box' }}
+                  >
+                    switch
+                  </button>
+                </div>
+                {isInputViewShown && (
+                  <textarea
+                    cols={30}
+                    rows={10}
+                    onChange={this.handleChangeMemo}
+                    value={note?.content}
+                  />
+                )}
+                {!isInputViewShown && <Markdown source={note.content} />}
+              </>
             )}
           </>
         )}
