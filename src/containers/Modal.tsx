@@ -55,7 +55,7 @@ class Modal extends Component<Props> {
             }}
           >
             <div className="m20">this is modal</div>
-            {Modal && <Modal className="m20" />}
+            <div className="m20">{Modal && <Modal />}</div>
             <div className="align-center">
               <button onClick={this.handleClose}>close</button>
             </div>

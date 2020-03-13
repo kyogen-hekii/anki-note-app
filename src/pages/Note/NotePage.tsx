@@ -14,7 +14,12 @@ import SetCodepenModal from './components/SetCodepenModal'
 
 const CodepenEmbedded = (props: any) => {
   const h: string = props.hash || 'JyxeVP'
-  return <Codepen hash={h} user="someone" />
+  return (
+    // HACK: keyを付与することで、再描画できる
+    <div key={h}>
+      <Codepen hash={h} user="someone" />
+    </div>
+  )
 }
 
 type Props = {
@@ -44,6 +49,7 @@ class NotePage extends Component<Props> {
       [{ value: 1 }, { value: 3 }],
       [{ value: 2 }, { value: 4 }],
     ],
+    isChanged: false,
   }
   // #endregion
 
@@ -187,9 +193,12 @@ class NotePage extends Component<Props> {
             {_.isEmpty(note?.codepenHash) ? (
               <button onClick={this.handleClickAdd}>create</button>
             ) : (
-              <div>
-                <CodepenEmbedded hash={note.codepenHash} />
-              </div>
+              <>
+                <div>
+                  <span>this pen is {note.codepenHash}</span>
+                  <CodepenEmbedded hash={note.codepenHash} />
+                </div>
+              </>
             )}
           </>
         )}
