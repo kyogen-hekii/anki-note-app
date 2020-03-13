@@ -10,6 +10,7 @@ import ReactDataSheet from 'react-datasheet'
 import 'react-datasheet/lib/react-datasheet.css'
 //@ts-ignore
 import Codepen from 'react-codepen-embed'
+import SetCodepenModal from './components/SetCodepenModal'
 
 const CodepenEmbedded = (props: any) => {
   const h: string = props.hash || 'JyxeVP'
@@ -58,16 +59,7 @@ class NotePage extends Component<Props> {
         content: 'please input',
       })
     }
-    const { grid } = this.state
-    const plusRowNum = 10 - ((grid.length - 1) % 10)
-
-    const g = grid.concat(
-      [...Array(plusRowNum)].map(() => {
-        return [{ value: '' }, { value: '' }]
-      }),
-    )
-    this.setState({ grid: g })
-    console.log(g)
+    this.addVocabularyRows()
   }
   // #endregion
 
@@ -86,7 +78,7 @@ class NotePage extends Component<Props> {
     if (currentTab === 'vocabulary') {
       this.addVocabularyRows()
     } else {
-      this.props.openModal()
+      this.props.openModal(SetCodepenModal)
     }
   }
   handleClickCreateMemo = () => {

@@ -16,7 +16,7 @@ class Modal extends Component<Props> {
   }
 
   render() {
-    const { isShow } = this.props.modal
+    const { isShow, Modal } = this.props.modal
 
     if (!isShow) {
       return null
@@ -55,6 +55,7 @@ class Modal extends Component<Props> {
             }}
           >
             <div className="m20">this is modal</div>
+            {Modal && <Modal className="m20" />}
             <div className="align-center">
               <button onClick={this.handleClose}>close</button>
             </div>
