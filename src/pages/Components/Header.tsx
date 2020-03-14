@@ -38,9 +38,8 @@ class InputEmailPage extends Component<Props> {
   render() {
     const { category, note } = this.props.selectedData
     return (
-      <div style={{ display: 'flex', backgroundColor: '#FEFEFE' }}>
+      <div style={{ display: 'flex', backgroundColor: '#FEFEFE', alignItems: 'center' }}>
         <img src={SiteLogo} alt="logo" width={50} height={50} />
-        {/* <span className="mr10"><logo/></span> */}
         <span className="mr5">{category?.label}</span>
         <span className="mr5">{note ? '>' : ''}</span>
         <span>{note?.title}</span>
