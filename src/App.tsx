@@ -17,27 +17,29 @@ function App() {
   return (
     <Provider store={store}>
       <PageHeader />
-      <ConnectedRouter history={history}>
-        <Switch>
-          <Route exact path="/login" component={DummyPage} />
-        </Switch>
-        <Switch>
-          <Route exact path="/register" component={DummyPage} />
-        </Switch>
-        <Switch>
-          <Route exact path="/" component={HomePage} />
-        </Switch>
-        <Switch>
-          <Route exact path="/home" component={HomePage} />
-        </Switch>
-        <Switch>
-          <Route exact path="/note" component={NotePage} />
-        </Switch>
-        <Switch>
-          <Route exact path="/profile" component={DummyPage} />
-        </Switch>
-        <Modal />
-      </ConnectedRouter>
+      <div style={{ backgroundColor: '#F5F5F5', paddingBottom: 20 }}>
+        <ConnectedRouter history={history}>
+          <Switch>
+            <Route exact path="/login" component={DummyPage} />
+          </Switch>
+          <Switch>
+            <Route exact path="/register" component={DummyPage} />
+          </Switch>
+          <Switch>
+            <Route exact path="/" component={HomePage} />
+          </Switch>
+          <Switch>
+            <Route exact path="/home" component={HomePage} />
+          </Switch>
+          <Switch>
+            <Route exact path="/note" component={NotePage} />
+          </Switch>
+          <Switch>
+            <Route exact path="/profile" component={DummyPage} />
+          </Switch>
+          <Modal />
+        </ConnectedRouter>
+      </div>
     </Provider>
   )
 }

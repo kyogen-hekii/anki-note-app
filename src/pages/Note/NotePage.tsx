@@ -172,20 +172,22 @@ class NotePage extends Component<Props> {
           </>
         )}
         {currentTab === 'vocabulary' && (
-          <ReactDataSheet
-            data={this.state.grid}
-            valueRenderer={(cell: any) => {
-              cell.width = 200
-              return cell.value
-            }}
-            onCellsChanged={changes => {
-              const grid = this.state.grid.map((row: any) => [...row])
-              changes.forEach(({ cell, row, col, value }) => {
-                grid[row][col] = { ...grid[row][col], value }
-              })
-              this.setState({ grid })
-            }}
-          />
+          <div style={{ backgroundColor: 'white', display: 'inline-block' }}>
+            <ReactDataSheet
+              data={this.state.grid}
+              valueRenderer={(cell: any) => {
+                cell.width = 200
+                return cell.value
+              }}
+              onCellsChanged={changes => {
+                const grid = this.state.grid.map((row: any) => [...row])
+                changes.forEach(({ cell, row, col, value }) => {
+                  grid[row][col] = { ...grid[row][col], value }
+                })
+                this.setState({ grid })
+              }}
+            />
+          </div>
           //<ReactDataSheet data={this.state.grid2} valueRenderer={(cell: any) => cell.value} />
         )}
         {currentTab === 'codepen' && (
