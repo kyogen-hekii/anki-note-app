@@ -6,6 +6,7 @@ import { ConnectedRouter } from 'connected-react-router'
 import configureStore, { history } from './store'
 
 import DummyPage from './dev/DummyPage'
+import PageHeader from './pages/Components/Header'
 import HomePage from './pages/Home/HomePage'
 import NotePage from './pages/Note/NotePage'
 import Modal from './containers/Modal'
@@ -15,7 +16,7 @@ const store = configureStore()
 function App() {
   return (
     <Provider store={store}>
-      <div>Header</div>
+      <PageHeader />
       <ConnectedRouter history={history}>
         <Switch>
           <Route exact path="/login" component={DummyPage} />
