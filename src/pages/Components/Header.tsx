@@ -3,10 +3,12 @@
 // state/cdm/handler/renderが入っている(connect版)
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import SiteLogo from '../../assets/svg/logo.svg'
 // import SimpleFetch from "../../api/SimpleFetch"
 // import { getUser } from "../../api/queries"
 
 type Props = {
+  selectedData: any
   //openModal: Function
 }
 class InputEmailPage extends Component<Props> {
@@ -34,19 +36,23 @@ class InputEmailPage extends Component<Props> {
 
   // #region render
   render() {
+    const { category, note } = this.props.selectedData
     return (
-      <div style={{ display: 'flex' }}>
-        <span>logo</span>
-        <span>category</span>
-        <span>></span>
-        <span>note</span>
+      <div style={{ display: 'flex', backgroundColor: '#FEFEFE' }}>
+        <img src={SiteLogo} alt="logo" width={50} height={50} />
+        {/* <span className="mr10"><logo/></span> */}
+        <span className="mr5">{category?.label}</span>
+        <span className="mr5">{note ? '>' : ''}</span>
+        <span>{note?.title}</span>
       </div>
     )
   }
   // #endregion
 }
 
-const mapStateToProps = (state: any) => ({})
+const mapStateToProps = (state: any) => ({
+  selectedData: state.selectedData,
+})
 
 const mapDispatchToProps = {
   //openModal,
