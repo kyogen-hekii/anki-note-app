@@ -7,6 +7,7 @@ import configureStore, { history } from './store'
 
 import DummyPage from './dev/DummyPage'
 import PageHeader from './pages/Components/Header'
+import PageFooter from './pages/Components/Footer'
 import HomePage from './pages/Home/HomePage'
 import NotePage from './pages/Note/NotePage'
 import Modal from './containers/Modal'
@@ -37,6 +38,7 @@ function App() {
           <Switch>
             <Route exact path="/profile" component={DummyPage} />
           </Switch>
+          <PageFooter />
           <Modal />
         </ConnectedRouter>
       </div>
