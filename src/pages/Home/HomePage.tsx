@@ -59,8 +59,8 @@ class HomePage extends Component<Props> {
             .filter((n: any) => n.categoryId === category.id)
             .map((n: any) => {
               return (
-                <Link to="/note">
-                  <NoteItem key={n.id} note={n} onClick={this.handleClickNote} />
+                <Link to="/note" key={n.id}>
+                  <NoteItem note={n} onClick={this.handleClickNote} />
                 </Link>
               )
             })}

@@ -48,12 +48,14 @@ export const getNotes = () => {
       categoryId: 1,
       title: 'basic',
       content: 'this is a basic text.',
+      codepenHash: 'BaavNYr',
     },
     {
       id: 2,
       categoryId: 1,
       title: 'setup',
       content: 'how to setup react.',
+      codepenHash: 'BaavNYr',
     },
     {
       id: 3,
