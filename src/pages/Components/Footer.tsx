@@ -51,17 +51,21 @@ class PageFooter extends Component<Props> {
     ]
     const { history } = this.props
     return (
-      <div className="pv20" style={{ display: 'flex', justifyContent: 'space-around' }}>
-        {pages.map(p =>
-          history.location.pathname === p.to ? (
-            <div key={p.id}>{p.id}</div>
-          ) : (
-            <Link key={p.id} to={p.to}>
-              <div>{p.id}</div>
-            </Link>
-          ),
-        )}
-        {/* <button onClick={this.handleClickPopUser}>Callendar</button> */}
+      <div
+        style={{ position: 'fixed', left: 0, bottom: 0, backgroundColor: 'white', width: '100%' }}
+      >
+        <div className="pv20" style={{ display: 'flex', justifyContent: 'space-around' }}>
+          {pages.map(p =>
+            history.location.pathname === p.to ? (
+              <div key={p.id}>{p.id}</div>
+            ) : (
+              <Link key={p.id} to={p.to}>
+                <div>{p.id}</div>
+              </Link>
+            ),
+          )}
+          {/* <button onClick={this.handleClickPopUser}>Callendar</button> */}
+        </div>
       </div>
     )
   }
