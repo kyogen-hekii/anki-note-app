@@ -3,7 +3,7 @@ export default async (data: any) => {
 }
 
 // TODO: export default
-const SimpleFetch = async (query: any) => {
+export const SimpleFetch = async (query: any) => {
   try {
     const data = await fetch('http://dev.anchor.id/graphql', {
       method: 'POST',
