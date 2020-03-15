@@ -41,6 +41,5 @@ const PageFooter = ({ history }: Props) => (
 const mapStateToProps = (state: any) => ({
   currentPage: state.currentPage,
 })
-
 const mapDispatchToProps = {}
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PageFooter))
