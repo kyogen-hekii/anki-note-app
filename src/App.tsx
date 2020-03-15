@@ -18,7 +18,7 @@ function App() {
   return (
     <Provider store={store}>
       <PageHeader />
-      <div style={{ backgroundColor: '#F5F5F5', paddingBottom: 20 }}>
+      <div style={{ backgroundColor: '#F5F5F5', paddingBottom: 20, minHeight: '100vh' }}>
         <ConnectedRouter history={history}>
           <Switch>
             <Route exact path="/login" component={DummyPage} />
