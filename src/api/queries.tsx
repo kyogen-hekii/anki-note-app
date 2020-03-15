@@ -47,7 +47,7 @@ export const getNotes = () => {
       id: 1,
       categoryId: 1,
       title: 'basic',
-      content: 'this is a basic text.',
+      content: 'this is a basic text./nthis...',
       codepenHash: 'BaavNYr',
     },
     {
@@ -59,7 +59,7 @@ export const getNotes = () => {
     },
     {
       id: 3,
-      categoryId: 3,
+      categoryId: 2,
       title: 'setup',
       content: 'how to setup vue.',
     },

@@ -53,7 +53,12 @@ class HomePage extends Component<Props> {
     const { categoryOptions, notes } = this.state
     return (
       <div>
-        <Select value={category} onChange={this.handleClickCategory} options={categoryOptions} />
+        <Select
+          value={category}
+          onChange={this.handleClickCategory}
+          options={categoryOptions}
+          className="mb10"
+        />
         {!_.isEmpty(category) &&
           notes
             .filter((n: any) => n.categoryId === category.id)
