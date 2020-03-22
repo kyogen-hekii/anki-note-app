@@ -8,7 +8,8 @@ class SetModal extends Component<Props> {
   state: any = {
     codepenUrl: '',
   }
-  handleClick = () => {
+  handleClick = async (e: any) => {
+    e.preventDefault()
     const { note } = this.props.selectedData
     const { codepenUrl } = this.state
     this.props.saveToStore('selectedData', 'note', { ...note, codepenUrl: codepenUrl })

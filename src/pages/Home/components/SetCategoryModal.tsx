@@ -11,7 +11,8 @@ class SetModal extends Component<Props> {
   state: any = {
     categoryName: '',
   }
-  handleClick = async () => {
+  handleClick = async (e: any) => {
+    e.preventDefault()
     const { categoryName } = this.state
     if (_.isEmpty(categoryName)) {
       this.props.closeModal()

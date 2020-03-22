@@ -5,13 +5,19 @@ import { closeModal } from '../../../reducers/modal'
 import { saveToStore } from '../../../utils/createVariantReducer'
 import { setNote, getNotes } from '../../../api/queries'
 
-type Props = { id: number; selectedData: any; saveToStore: Function; closeModal: Function }
+type Props = {
+  id: number
+  selectedData: any
+  saveToStore: Function
+  closeModal: Function
+}
 class SetModal extends Component<Props> {
   state: any = {
     noteName: '',
   }
 
-  handleClick = async () => {
+  handleClick = async (e: any) => {
+    e.preventDefault()
     const { noteName } = this.state
     if (_.isEmpty(noteName)) {
       this.props.closeModal()
@@ -25,7 +31,11 @@ class SetModal extends Component<Props> {
       content: '',
       codepenUrl: '',
     }
-    await setNote(newNote)
+    try {
+      await setNote(newNote)
+    } catch (e) {
+      console.error(e)
+    }
     this.props.saveToStore('selectedData', 'note', newNote)
     this.props.closeModal()
   }
