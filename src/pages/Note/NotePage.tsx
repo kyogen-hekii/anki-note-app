@@ -5,6 +5,7 @@ import { getUser } from '../../api/queries'
 import { connect } from 'react-redux'
 import { openModal } from '../../reducers/modal'
 import { saveToStore } from '../../utils/createVariantReducer'
+import { Link } from 'react-router-dom'
 import _ from 'lodash'
 import ReactDataSheet from 'react-datasheet'
 import 'react-datasheet/lib/react-datasheet.css'
@@ -32,12 +33,6 @@ type Props = {
   saveToStore: Function
 }
 class NotePage extends Component<Props> {
-  // constructor(props: any) {
-  //   super(props)
-  //   if (_.isEmpty(props.selectedData?.note)) {
-  //     props.history.push('/home')
-  //   }
-  // }
   // #region state
   // TODO: local stateをglobal stateに昇格
   state: any = {
@@ -85,7 +80,7 @@ class NotePage extends Component<Props> {
     },
     vocabulary: {
       onPlusButtonClick: () => {
-        console.log('plus_vocab')
+        this.addVocabularyRows()
       },
       onQuestionButtonClick: () => {
         console.log('question_vocab')
@@ -105,7 +100,7 @@ class NotePage extends Component<Props> {
     },
     codepen: {
       onPlusButtonClick: () => {
-        console.log('plus_codepen')
+        this.props.openModal(SetCodepenModal)
       },
       onQuestionButtonClick: () => {
         console.log('question_codepen')
@@ -144,27 +139,6 @@ class NotePage extends Component<Props> {
   // #endregion
 
   // #region handler
-  // handleClickMemo = () => {
-  //   this.setState({ currentTab: 'memo' })
-  // }
-  // handleClickVocabulary = () => {
-  //   this.setState({ currentTab: 'vocabulary' })
-  // }
-  // handleClickCodepen = () => {
-  //   this.setState({ currentTab: 'codepen' })
-  // }
-  handleClickAdd = () => {
-    // const { currentTab } = this.state
-    // if (currentTab === 'vocabulary') {
-    //   this.addVocabularyRows()
-    // } else {
-    //   this.props.openModal(SetCodepenModal)
-    // }
-  }
-  handleClickCreateMemo = () => {
-    const { note } = this.props.selectedData
-    this.props.saveToStore('selectedData', 'note', { ...note, content: 'please input' })
-  }
   handleChangeMemo = (e: any) => {
     const { note } = this.props.selectedData
     const content = e.target?.value
@@ -195,15 +169,17 @@ class NotePage extends Component<Props> {
     const { category, note } = this.props.selectedData
     const { currentTab = 'memo' } = this.props.page
     const { isInputViewShown } = this.state
+    if (_.isEmpty(category) || _.isEmpty(note)) {
+      return (
+        <div>
+          Please select category and note at the <Link to="/home">HomePage</Link>
+        </div>
+      )
+    }
+
     return (
       <>
         <Tabs tabs={Object.keys(this.obj)} />
-        {/* <div style={{ display: 'flex' }}>
-          <button onClick={this.handleClickMemo}>memo</button>
-          <button onClick={this.handleClickVocabulary}>vocabulary</button>
-          <button onClick={this.handleClickCodepen}>codepen</button>
-        </div> */}
-
         <OperationMenu obj={this.obj[currentTab]} />
 
         {currentTab === 'memo' && (
@@ -258,7 +234,7 @@ class NotePage extends Component<Props> {
         {currentTab === 'codepen' && (
           <>
             {_.isEmpty(note?.codepenHash) ? (
-              <button onClick={this.handleClickAdd}>create</button>
+              <div>please input codepen'URL with right + button</div>
             ) : (
               <>
                 <div>
@@ -286,7 +262,3 @@ const mapDispatchToProps = {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(NotePage)
-
-// handleClickCategory = (selectedCategory: any) => {
-//   this.props.saveToStore('category', 'category', selectedCategory)
-// }

@@ -7,8 +7,6 @@ import TabButton from './TabButton'
 type Props = { currentTab: string; tabs: string[]; saveToStore: Function }
 
 const Tabs = ({ currentTab, tabs, saveToStore }: Props) => {
-  console.log('currentTab: ', currentTab)
-  console.log('tabs: ', tabs)
   return (
     <div>
       <div style={{ display: 'flex', overflowX: 'scroll' }}>
