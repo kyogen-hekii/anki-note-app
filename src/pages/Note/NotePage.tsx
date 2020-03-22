@@ -12,6 +12,7 @@ import 'react-datasheet/lib/react-datasheet.css'
 import Codepen from 'react-codepen-embed'
 import SetCodepenModal from './components/SetCodepenModal'
 import OperationMenu from '../../components/OperationMenu'
+import Tabs from '../../components/Tabs'
 
 const CodepenEmbedded = (props: any) => {
   const h: string = props.hash || 'JyxeVP'
@@ -25,6 +26,7 @@ const CodepenEmbedded = (props: any) => {
 
 type Props = {
   history: any
+  page: any
   selectedData: any
   openModal: Function
   saveToStore: Function
@@ -40,7 +42,6 @@ class NotePage extends Component<Props> {
   // TODO: local stateをglobal stateに昇格
   state: any = {
     user: {},
-    currentTab: 'memo',
     isInputViewShown: true,
     grid: [
       [
@@ -129,6 +130,7 @@ class NotePage extends Component<Props> {
   async componentDidMount() {
     const user = await SimpleFetch(getUser(1))
     this.setState({ user })
+    this.props.saveToStore('page', 'currentTab', Object.keys(this.obj)[0])
     //const { note } = this.props.selectedData
     // if (_.isEmpty(note)) {
     //   this.props.saveToStore('selectedData', 'note', {
@@ -142,22 +144,22 @@ class NotePage extends Component<Props> {
   // #endregion
 
   // #region handler
-  handleClickMemo = () => {
-    this.setState({ currentTab: 'memo' })
-  }
-  handleClickVocabulary = () => {
-    this.setState({ currentTab: 'vocabulary' })
-  }
-  handleClickCodepen = () => {
-    this.setState({ currentTab: 'codepen' })
-  }
+  // handleClickMemo = () => {
+  //   this.setState({ currentTab: 'memo' })
+  // }
+  // handleClickVocabulary = () => {
+  //   this.setState({ currentTab: 'vocabulary' })
+  // }
+  // handleClickCodepen = () => {
+  //   this.setState({ currentTab: 'codepen' })
+  // }
   handleClickAdd = () => {
-    const { currentTab } = this.state
-    if (currentTab === 'vocabulary') {
-      this.addVocabularyRows()
-    } else {
-      this.props.openModal(SetCodepenModal)
-    }
+    // const { currentTab } = this.state
+    // if (currentTab === 'vocabulary') {
+    //   this.addVocabularyRows()
+    // } else {
+    //   this.props.openModal(SetCodepenModal)
+    // }
   }
   handleClickCreateMemo = () => {
     const { note } = this.props.selectedData
@@ -191,19 +193,18 @@ class NotePage extends Component<Props> {
   // #region render
   render() {
     const { category, note } = this.props.selectedData
-    const { currentTab, isInputViewShown } = this.state
+    const { currentTab = 'memo' } = this.props.page
+    const { isInputViewShown } = this.state
     return (
       <>
-        <div>
-          category: {category?.label}, note: {note?.title}
-        </div>
-        <div style={{ display: 'flex' }}>
+        <Tabs tabs={Object.keys(this.obj)} />
+        {/* <div style={{ display: 'flex' }}>
           <button onClick={this.handleClickMemo}>memo</button>
           <button onClick={this.handleClickVocabulary}>vocabulary</button>
           <button onClick={this.handleClickCodepen}>codepen</button>
-        </div>
+        </div> */}
 
-        <OperationMenu obj={this.obj[this.state.currentTab]} />
+        <OperationMenu obj={this.obj[currentTab]} />
 
         {currentTab === 'memo' && (
           <>
@@ -275,6 +276,7 @@ class NotePage extends Component<Props> {
 }
 
 const mapStateToProps = (state: any) => ({
+  page: state.page,
   selectedData: state.selectedData,
 })
 

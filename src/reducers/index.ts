@@ -7,6 +7,7 @@ import createVariantReducer from '../utils/createVariantReducer'
 const createRootReducer = (history: History) =>
   combineReducers({
     router: connectRouter(history),
+    page: createVariantReducer('page'),
     selectedData: createVariantReducer('selectedData'),
     modal,
   })
