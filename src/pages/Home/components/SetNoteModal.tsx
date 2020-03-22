@@ -8,6 +8,7 @@ import { setNote, getNotes } from '../../../api/queries'
 type Props = {
   id: number
   selectedData: any
+  callBack: any
   saveToStore: Function
   closeModal: Function
 }
@@ -37,6 +38,9 @@ class SetModal extends Component<Props> {
       console.error(e)
     }
     this.props.saveToStore('selectedData', 'note', newNote)
+
+    const { callBack }: any = this.props
+    callBack && (await callBack())
     this.props.closeModal()
   }
   handlenoteNameChange = (e: any) => {
@@ -67,8 +71,9 @@ class SetModal extends Component<Props> {
     )
   }
 }
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: any, ownProps: any) => ({
   selectedData: state.selectedData,
+  callBack: ownProps.callBack,
   // page: state.page,
 })
 

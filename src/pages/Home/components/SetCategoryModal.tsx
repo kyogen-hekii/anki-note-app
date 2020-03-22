@@ -6,7 +6,13 @@ import { closeModal } from '../../../reducers/modal'
 import { saveToStore } from '../../../utils/createVariantReducer'
 import { setCategory, getCategories } from '../../../api/queries'
 
-type Props = { id: number; selectedData: any; saveToStore: Function; closeModal: Function }
+type Props = {
+  id: number
+  selectedData: any
+  callBack: any
+  saveToStore: Function
+  closeModal: Function
+}
 class SetModal extends Component<Props> {
   state: any = {
     categoryName: '',
@@ -26,6 +32,9 @@ class SetModal extends Component<Props> {
     }
     await setCategory(newCategory)
     this.props.saveToStore('selectedData', 'category', newCategory)
+
+    const { callBack }: any = this.props
+    callBack && (await callBack())
     this.props.closeModal()
   }
   handleCategoryChange = (e: any) => {
@@ -58,7 +67,7 @@ class SetModal extends Component<Props> {
 }
 const mapStateToProps = (state: any) => ({
   selectedData: state.selectedData,
-  // page: state.page,
+  page: state.page,
 })
 
 const mapDispatchToProps = {

@@ -18,6 +18,7 @@ type Props = {
     category: any
     note: any
   }
+  page: any
   saveToStore: Function
   openModal: Function
 }
@@ -25,12 +26,10 @@ class HomePage extends Component<Props> {
   // #region state
   state: any = {
     user: {},
-    categoryOptions: [],
-    notes: [],
   }
   obj: any = {
     onPlusButtonClick: () => {
-      this.props.openModal(SetNoteModal)
+      this.props.openModal(SetNoteModal, this.initNotes)
     },
     onQuestionButtonClick: () => {
       console.log('question_memo')
@@ -54,23 +53,17 @@ class HomePage extends Component<Props> {
   async componentDidMount() {
     const user = await SimpleFetch(getUser(1))
     this.setState({ user })
-    const categoryOptions = await SimpleFetch(getCategories())
-    this.setState({
-      categoryOptions: categoryOptions.concat({
-        id: this.CREATE_ID,
-        value: 'add_category',
-        label: 'add category...',
-      }),
-    })
-    const notes = await SimpleFetch(getNotes())
-    this.setState({ notes })
+
+    await this.initCategoryOptions()
+
+    await this.initNotes()
   }
   // #endregion
 
   // #region handler
   handleClickCategory = (selectedCategory: any) => {
     if (selectedCategory.id === this.CREATE_ID) {
-      this.props.openModal(SetCategoryModal)
+      this.props.openModal(SetCategoryModal, this.initCategoryOptions)
       return
     }
     this.props.saveToStore('selectedData', 'category', selectedCategory)
@@ -79,15 +72,28 @@ class HomePage extends Component<Props> {
   handleClickNote = (selectedNote: any) => {
     this.props.saveToStore('selectedData', 'note', selectedNote)
   }
-  handleSetData = () => {
-    this.props.openModal()
+  // #endregion
+
+  // #region private method
+  private initCategoryOptions = async () => {
+    const categoryOptions = await SimpleFetch(getCategories())
+    const appendixOption = {
+      id: this.CREATE_ID,
+      value: 'add_category',
+      label: 'add category...',
+    }
+    this.props.saveToStore('page', 'categoryOptions', categoryOptions.concat(appendixOption))
+  }
+  private initNotes = async () => {
+    const notes = await SimpleFetch(getNotes())
+    this.props.saveToStore('page', 'notes', notes)
   }
   // #endregion
 
   // #region render
   render() {
     const { category } = this.props.selectedData
-    const { categoryOptions, notes } = this.state
+    const { categoryOptions, notes } = this.props.page
     return (
       <div>
         <Select
@@ -119,6 +125,7 @@ class HomePage extends Component<Props> {
 // extends Component<Props>
 const mapStateToProps = (state: any) => ({
   selectedData: state.selectedData,
+  page: state.page,
 })
 const mapDispatchToProps = {
   saveToStore,
