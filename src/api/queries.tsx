@@ -33,7 +33,10 @@ export const getCategories = async () => {
 }
 export const setCategory = async (category: any) => {
   const categoryRef = firebaseDb.collection(TABLE_CATEGORIES)
-  categoryRef.doc(category.label).set(category)
+  categoryRef
+    .doc(category.label)
+    .set(category)
+    .catch(e => console.log(e))
 }
 // #endregion
 
@@ -54,6 +57,9 @@ export const setNote = async (note: any, categoryName?: string) => {
       .then(ss => ss.docs.map(e => e.data()))
     categoryRefName = catData.find(e => e)?.label.toString()
   }
-  noteRef.doc(`${categoryName || categoryRefName}-${pascalize(note.title)}`).set(note)
+  noteRef
+    .doc(`${categoryName || categoryRefName}-${pascalize(note.title)}`)
+    .set(note)
+    .catch(e => console.log(e))
 }
 // #endregion
