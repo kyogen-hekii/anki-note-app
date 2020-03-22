@@ -11,6 +11,7 @@ import NoteImgOn from '../../assets/svg/note-on.svg'
 import styled from 'styled-components'
 
 // #region constants
+const DEFAULT_SIZE = 30
 const pages = [
   {
     id: 'NOTE',
@@ -18,6 +19,8 @@ const pages = [
     clickable: (isExistsCategory: boolean) => isExistsCategory,
     logo: NoteImg,
     logoOn: NoteImgOn,
+    width: DEFAULT_SIZE,
+    height: DEFAULT_SIZE,
   },
   {
     id: 'HOME',
@@ -25,6 +28,8 @@ const pages = [
     clickable: (alwaysTrue: boolean) => true,
     logo: HomeImg,
     logoOn: HomeImgOn,
+    width: DEFAULT_SIZE,
+    height: DEFAULT_SIZE,
   },
   {
     id: 'ANKI',
@@ -32,6 +37,8 @@ const pages = [
     clickable: (isExistsCategory: boolean) => isExistsCategory,
     logo: FlashcardImg,
     logoOn: FlashcardImgOn,
+    width: 50,
+    height: DEFAULT_SIZE,
   },
 ]
 // #endregion
@@ -41,18 +48,18 @@ type Props = {
   isExistsCategory: boolean
 }
 const PageFooter = ({ history, isExistsCategory }: Props) => (
-  <div style={{ position: 'fixed', left: 0, bottom: 0, backgroundColor: 'white', width: '100%' }}>
+  <div style={{ position: 'fixed', left: 0, bottom: 0, backgroundColor: 'white', width: '100%', height: '8rem' }}>
     <div className="pv20" style={{ display: 'flex', justifyContent: 'space-around' }}>
       {pages.map(p =>
         history.location.pathname === p.to ? (
           <div key={p.id} style={{ display: 'flex', flexDirection: 'column', textAlign: 'center' }}>
-            <img key={p.id} src={p.logoOn} alt={p.id} width={50} height={50} />
+            <img key={p.id} src={p.logoOn} alt={p.id} width={p.width} height={p.height} />
             <span>{p.id}</span>
           </div>
         ) : (
           <StyledLink key={p.id} to={p.to} canClick={p.clickable(isExistsCategory)}>
             <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'center' }}>
-              <img src={p.logo} alt={p.id} width={50} height={50} />
+              <img src={p.logo} alt={p.id} width={p.width} height={p.height} />
               <span>{p.id}</span>
             </div>
           </StyledLink>

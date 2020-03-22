@@ -238,7 +238,6 @@ class NotePage extends Component<Props> {
             ) : (
               <>
                 <div>
-                  <span>this pen is {note.codepenHash}</span>
                   <CodepenEmbedded hash={note.codepenHash} />
                 </div>
               </>
