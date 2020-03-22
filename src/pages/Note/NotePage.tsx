@@ -8,10 +8,10 @@ import { saveToStore } from '../../utils/createVariantReducer'
 import _ from 'lodash'
 import ReactDataSheet from 'react-datasheet'
 import 'react-datasheet/lib/react-datasheet.css'
-import styled from 'styled-components'
 //@ts-ignore
 import Codepen from 'react-codepen-embed'
 import SetCodepenModal from './components/SetCodepenModal'
+import OperationMenu from '../../components/OperationMenu'
 
 const CodepenEmbedded = (props: any) => {
   const h: string = props.hash || 'JyxeVP'
@@ -55,7 +55,16 @@ class NotePage extends Component<Props> {
   obj: any = {
     memo: {
       onPlusButtonClick: () => {
-        console.log('plus_memo')
+        const { note } = this.props.selectedData
+        if (!_.isEmpty(note?.content)) {
+          console.log('already exists')
+          return
+        }
+        this.props.saveToStore('selectedData', 'note', {
+          ...note,
+          title: 'new',
+          content: 'please input',
+        })
       },
       onQuestionButtonClick: () => {
         console.log('question_memo')
@@ -183,16 +192,6 @@ class NotePage extends Component<Props> {
   render() {
     const { category, note } = this.props.selectedData
     const { currentTab, isInputViewShown } = this.state
-    const VerticalBar = styled.div`
-      position: absolute;
-      top: 0;
-      right: 0;
-      display: flex;
-      flex-flow: column;
-    `
-    const RelativeWrapper = styled.div`
-      position: relative;
-    `
     return (
       <>
         <div>
@@ -203,38 +202,13 @@ class NotePage extends Component<Props> {
           <button onClick={this.handleClickVocabulary}>vocabulary</button>
           <button onClick={this.handleClickCodepen}>codepen</button>
         </div>
-        <RelativeWrapper>
-          <VerticalBar>
-            <button
-              onClick={this.obj[currentTab].onPlusButtonClick}
-              disabled={!this.obj[currentTab].isAble.plus}
-            >
-              <i className="fa fa-plus" />
-            </button>
-            <button
-              onClick={this.obj[currentTab].onQuestionButtonClick}
-              disabled={!this.obj[currentTab].isAble.question}
-            >
-              ?
-            </button>
-            <button
-              onClick={this.obj[currentTab].onChangeButtonClick}
-              disabled={!this.obj[currentTab].isAble.change}
-            >
-              <i className="fa fa-exchange-alt" />
-            </button>
-            <button
-              onClick={this.obj[currentTab].onExportButtonClick}
-              disabled={!this.obj[currentTab].isAble.export}
-            >
-              <i className="fa fa-file-export" />
-            </button>
-          </VerticalBar>
-        </RelativeWrapper>
+
+        <OperationMenu obj={this.obj[this.state.currentTab]} />
+
         {currentTab === 'memo' && (
           <>
             {_.isEmpty(note?.content) ? (
-              <button onClick={this.handleClickCreateMemo}>create</button>
+              <div>please create note with right + button</div>
             ) : (
               <>
                 <div>
