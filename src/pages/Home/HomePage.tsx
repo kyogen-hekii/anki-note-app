@@ -9,9 +9,13 @@ import NoteItem from './components/NoteItem'
 import { openModal } from '../../reducers/modal'
 import { saveToStore } from '../../utils/createVariantReducer'
 import { Link } from 'react-router-dom'
+import SetCategoryModal from './components/SetCategoryModal'
 
 type Props = {
-  selectedData: any
+  selectedData: {
+    category: any
+    note: any
+  }
   saveToStore: Function
   openModal: Function
 }
@@ -23,13 +27,19 @@ class HomePage extends Component<Props> {
     notes: [],
   }
   // #endregion
-
+  CREATE_ID: number = 999
   // #region componentDidMount
   async componentDidMount() {
     const user = await SimpleFetch(getUser(1))
     this.setState({ user })
     const categoryOptions = await SimpleFetch(getCategories())
-    this.setState({ categoryOptions })
+    this.setState({
+      categoryOptions: categoryOptions.concat({
+        id: this.CREATE_ID,
+        value: 'add_category',
+        label: 'add category...',
+      }),
+    })
     const notes = await SimpleFetch(getNotes())
     this.setState({ notes })
   }
@@ -37,7 +47,12 @@ class HomePage extends Component<Props> {
 
   // #region handler
   handleClickCategory = (selectedCategory: any) => {
+    if (selectedCategory.id === this.CREATE_ID) {
+      this.props.openModal(SetCategoryModal)
+      return
+    }
     this.props.saveToStore('selectedData', 'category', selectedCategory)
+    this.props.saveToStore('selectedData', 'note', {})
   }
   handleClickNote = (selectedNote: any) => {
     this.props.saveToStore('selectedData', 'note', selectedNote)
