@@ -1,47 +1,49 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { pascalize, camelize } from 'humps'
 import _ from 'lodash'
 import { closeModal } from '../../../reducers/modal'
 import { saveToStore } from '../../../utils/createVariantReducer'
-import { setCategory, getCategories } from '../../../api/queries'
+import { setNote, getNotes } from '../../../api/queries'
 
 type Props = { id: number; selectedData: any; saveToStore: Function; closeModal: Function }
 class SetModal extends Component<Props> {
   state: any = {
-    categoryName: '',
+    noteName: '',
   }
+
   handleClick = async () => {
-    const { categoryName } = this.state
-    if (_.isEmpty(categoryName)) {
+    const { noteName } = this.state
+    if (_.isEmpty(noteName)) {
       this.props.closeModal()
       return
     }
-    const maxId = (await getCategories()).map(c => c.id).reduce((p, r) => Math.max(p, r))
-    const newCategory = {
+    const maxId = (await getNotes()).map(n => n.id).reduce((p, r) => Math.max(p, r))
+    const newNote = {
       id: maxId + 1,
-      value: camelize(categoryName),
-      label: pascalize(categoryName),
+      categoryId: this.props.selectedData.category.id,
+      title: noteName,
+      content: '',
+      codepenHash: '',
     }
-    await setCategory(newCategory)
-    this.props.saveToStore('selectedData', 'category', newCategory)
+    await setNote(newNote)
+    this.props.saveToStore('selectedData', 'note', newNote)
     this.props.closeModal()
   }
-  handleCategoryChange = (e: any) => {
+  handlenoteNameChange = (e: any) => {
     const { value } = e.target
-    this.setState({ categoryName: value })
+    this.setState({ noteName: value })
   }
 
   render() {
     const { codepenUrl } = this.state
     return (
       <div className={`align-center`}>
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <form style={{ display: 'flex', flexDirection: 'column' }}>
           <input
             type="text"
             value={codepenUrl}
-            placeholder="e.g.) React, Vue.js..."
-            onChange={this.handleCategoryChange}
+            placeholder="please your note title"
+            onChange={this.handlenoteNameChange}
             autoFocus
           />
           <button
@@ -50,7 +52,7 @@ class SetModal extends Component<Props> {
           >
             click me
           </button>
-        </div>
+        </form>
       </div>
     )
   }

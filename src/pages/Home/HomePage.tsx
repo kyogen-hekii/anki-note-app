@@ -10,6 +10,8 @@ import { openModal } from '../../reducers/modal'
 import { saveToStore } from '../../utils/createVariantReducer'
 import { Link } from 'react-router-dom'
 import SetCategoryModal from './components/SetCategoryModal'
+import OperationMenu from '../../components/OperationMenu'
+import SetNoteModal from './components/SetNoteModal'
 
 type Props = {
   selectedData: {
@@ -25,6 +27,26 @@ class HomePage extends Component<Props> {
     user: {},
     categoryOptions: [],
     notes: [],
+  }
+  obj: any = {
+    onPlusButtonClick: () => {
+      this.props.openModal(SetNoteModal)
+    },
+    onQuestionButtonClick: () => {
+      console.log('question_memo')
+    },
+    onExportButtonClick: () => {
+      console.log('')
+    },
+    onChangeButtonClick: () => {
+      console.log('')
+    },
+    isAble: {
+      plus: true,
+      question: true,
+      export: true,
+      change: true,
+    },
   }
   // #endregion
   CREATE_ID: number = 999
@@ -74,14 +96,18 @@ class HomePage extends Component<Props> {
           options={categoryOptions}
           className="mb10"
         />
+
+        <OperationMenu obj={this.obj} />
         {!_.isEmpty(category) &&
           notes
             .filter((n: any) => n.categoryId === category.id)
             .map((n: any) => {
               return (
-                <Link to="/note" key={n.id}>
-                  <NoteItem note={n} onClick={this.handleClickNote} />
-                </Link>
+                <div key={n.id}>
+                  <Link to="/note">
+                    <NoteItem note={n} onClick={this.handleClickNote} />
+                  </Link>
+                </div>
               )
             })}
       </div>
