@@ -23,7 +23,7 @@ class SetModal extends Component<Props> {
       categoryId: this.props.selectedData.category.id,
       title: noteName,
       content: '',
-      codepenHash: '',
+      codepenUrl: '',
     }
     await setNote(newNote)
     this.props.saveToStore('selectedData', 'note', newNote)

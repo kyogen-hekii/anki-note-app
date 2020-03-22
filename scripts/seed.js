@@ -44,14 +44,14 @@ cli.command('notes', 'notesを作成します')
         categoryId: 1,
         title: 'basic',
         content: 'this is a basic text./nthis...',
-        codepenHash: 'BaavNYr',
+        codepenUrl: 'https://codepen.io/kyogen0/details/BaavNYr',
       }),
       seed.doc('React-Setup', {
         id: 2,
         categoryId: 1,
         title: 'setup',
         content: 'how to setup react.',
-        codepenHash: 'BaavNYr',
+        codepenUrl: 'https://codepen.io/kyogen0/details/QWbVKza',
       }),
       seed.doc('Vue-Setup', {
         id: 3,

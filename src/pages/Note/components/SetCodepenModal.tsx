@@ -11,7 +11,7 @@ class SetModal extends Component<Props> {
   handleClick = () => {
     const { note } = this.props.selectedData
     const { codepenUrl } = this.state
-    this.props.saveToStore('selectedData', 'note', { ...note, codepenHash: codepenUrl })
+    this.props.saveToStore('selectedData', 'note', { ...note, codepenUrl: codepenUrl })
     this.props.closeModal()
   }
   handleCodepenUrlChange = (e: any) => {

@@ -69,7 +69,8 @@ class NotePage extends Component<Props> {
         console.log('')
       },
       onChangeButtonClick: () => {
-        console.log('')
+        const { isInputViewShown } = this.state
+        this.setState({ isInputViewShown: !isInputViewShown })
       },
       isAble: {
         plus: true,
@@ -162,6 +163,9 @@ class NotePage extends Component<Props> {
     )
     this.setState({ grid: g })
   }
+  private codepenUrlToHash = (codepenUrl: string) => {
+    return codepenUrl.split('/').slice(-1)[0]
+  }
   // #endregion
 
   // #region render
@@ -188,26 +192,16 @@ class NotePage extends Component<Props> {
               <div>please create note with right + button</div>
             ) : (
               <>
-                <div>
-                  <button
-                    onClick={() => {
-                      this.setState({ isInputViewShown: !isInputViewShown })
-                    }}
-                    style={{ boxSizing: 'border-box' }}
-                  >
-                    <i className="fa fa-exchange-alt" />
-                    switch to {isInputViewShown ? 'markdown' : 'input'}
-                  </button>
-                </div>
-                {isInputViewShown && (
+                {isInputViewShown ? (
                   <textarea
                     cols={30}
                     rows={10}
                     onChange={this.handleChangeMemo}
                     value={note?.content}
                   />
+                ) : (
+                  <Markdown source={note.content} />
                 )}
-                {!isInputViewShown && <Markdown source={note.content} />}
               </>
             )}
           </>
@@ -233,12 +227,12 @@ class NotePage extends Component<Props> {
         )}
         {currentTab === 'codepen' && (
           <>
-            {_.isEmpty(note?.codepenHash) ? (
+            {_.isEmpty(note?.codepenUrl) ? (
               <div>please input codepen'URL with right + button</div>
             ) : (
               <>
                 <div>
-                  <CodepenEmbedded hash={note.codepenHash} />
+                  <CodepenEmbedded hash={this.codepenUrlToHash(note.codepenUrl)} />
                 </div>
               </>
             )}
