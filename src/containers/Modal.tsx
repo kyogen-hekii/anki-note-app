@@ -54,10 +54,12 @@ class Modal extends Component<Props> {
               borderRadius: 8,
             }}
           >
-            <div className="m20">this is modal</div>
             <div className="m20">{Modal && <Modal />}</div>
+
             <div className="align-center">
-              <button onClick={this.handleClose}>close</button>
+              <button type="button" onClick={this.handleClose}>
+                close
+              </button>
             </div>
           </div>
         </div>
