@@ -1,3 +1,5 @@
+import { firebaseDb } from '../firebase'
+
 export const getUser = (userId: number) => {
   const user = {
     id: userId,
@@ -22,23 +24,16 @@ export const REALgetUser = (userId: number) => {
 }
 // #endregion
 
-// #region getCategories
-export const getCategories = () => {
-  const categories = [
-    {
-      id: 1,
-      value: 'react',
-      label: 'React',
-    },
-    {
-      id: 2,
-      value: 'vue',
-      label: 'Vue.js',
-    },
-  ]
-  return categories
+const TABLE_CATEGORIES = 'categories'
+
+export const getCategories = async () => {
+  const categoryRef = firebaseDb.collection(TABLE_CATEGORIES)
+  return categoryRef.get().then(ss => ss.docs.map(e => e.data()))
 }
-// #endregion
+export const setCategory = async (category: any) => {
+  const categoryRef = firebaseDb.collection(TABLE_CATEGORIES)
+  categoryRef.doc(category.label).set(category)
+}
 
 // #region getNotes
 export const getNotes = () => {
