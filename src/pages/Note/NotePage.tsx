@@ -8,6 +8,7 @@ import { saveToStore } from '../../utils/createVariantReducer'
 import _ from 'lodash'
 import ReactDataSheet from 'react-datasheet'
 import 'react-datasheet/lib/react-datasheet.css'
+import styled from 'styled-components'
 //@ts-ignore
 import Codepen from 'react-codepen-embed'
 import SetCodepenModal from './components/SetCodepenModal'
@@ -51,20 +52,82 @@ class NotePage extends Component<Props> {
     ],
     isChanged: false,
   }
+  obj: any = {
+    memo: {
+      onPlusButtonClick: () => {
+        console.log('plus_memo')
+      },
+      onQuestionButtonClick: () => {
+        console.log('question_memo')
+      },
+      onExportButtonClick: () => {
+        console.log('')
+      },
+      onChangeButtonClick: () => {
+        console.log('')
+      },
+      isAble: {
+        plus: true,
+        question: true,
+        export: true,
+        change: true,
+      },
+    },
+    vocabulary: {
+      onPlusButtonClick: () => {
+        console.log('plus_vocab')
+      },
+      onQuestionButtonClick: () => {
+        console.log('question_vocab')
+      },
+      onExportButtonClick: () => {
+        console.log('')
+      },
+      onChangeButtonClick: () => {
+        console.log('')
+      },
+      isAble: {
+        plus: true,
+        question: true,
+        export: true,
+        change: true,
+      },
+    },
+    codepen: {
+      onPlusButtonClick: () => {
+        console.log('plus_codepen')
+      },
+      onQuestionButtonClick: () => {
+        console.log('question_codepen')
+      },
+      onExportButtonClick: () => {
+        console.log('')
+      },
+      onChangeButtonClick: () => {
+        console.log('')
+      },
+      isAble: {
+        plus: true,
+        question: true,
+        export: true,
+        change: true,
+      },
+    },
+  }
   // #endregion
 
   // #region componentDidMount
   async componentDidMount() {
     const user = await SimpleFetch(getUser(1))
     this.setState({ user })
-    const { note } = this.props.selectedData
-    if (_.isEmpty(note)) {
-      this.props.saveToStore('selectedData', 'note', {
-        ...note,
-        title: 'new',
-        content: 'please input',
-      })
-    }
+    //const { note } = this.props.selectedData
+    // if (_.isEmpty(note)) {
+    //   this.props.saveToStore('selectedData', 'note', {
+    //     ...note,
+    //     title: 'new',
+    //     content: 'please input',
+    //   })
+    // }
     this.addVocabularyRows()
   }
   // #endregion
@@ -97,6 +160,7 @@ class NotePage extends Component<Props> {
     this.props.saveToStore('selectedData', 'note', { ...note, content })
   }
   // #endregion
+
   // #region private method
   /**
    * vocabulary gridの行数を増やす
@@ -119,21 +183,18 @@ class NotePage extends Component<Props> {
   render() {
     const { category, note } = this.props.selectedData
     const { currentTab, isInputViewShown } = this.state
+    const VerticalBar = styled.div`
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: flex;
+      flex-flow: column;
+    `
+    const RelativeWrapper = styled.div`
+      position: relative;
+    `
     return (
       <>
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            right: 0,
-            display: 'flex',
-            flexFlow: 'column',
-          }}
-        >
-          <button onClick={this.handleClickAdd}>+</button>
-          <button>?</button>
-        </div>
-
         <div>
           category: {category?.label}, note: {note?.title}
         </div>
@@ -142,6 +203,34 @@ class NotePage extends Component<Props> {
           <button onClick={this.handleClickVocabulary}>vocabulary</button>
           <button onClick={this.handleClickCodepen}>codepen</button>
         </div>
+        <RelativeWrapper>
+          <VerticalBar>
+            <button
+              onClick={this.obj[currentTab].onPlusButtonClick}
+              disabled={!this.obj[currentTab].isAble.plus}
+            >
+              <i className="fa fa-plus" />
+            </button>
+            <button
+              onClick={this.obj[currentTab].onQuestionButtonClick}
+              disabled={!this.obj[currentTab].isAble.question}
+            >
+              ?
+            </button>
+            <button
+              onClick={this.obj[currentTab].onChangeButtonClick}
+              disabled={!this.obj[currentTab].isAble.change}
+            >
+              <i className="fa fa-exchange-alt" />
+            </button>
+            <button
+              onClick={this.obj[currentTab].onExportButtonClick}
+              disabled={!this.obj[currentTab].isAble.export}
+            >
+              <i className="fa fa-file-export" />
+            </button>
+          </VerticalBar>
+        </RelativeWrapper>
         {currentTab === 'memo' && (
           <>
             {_.isEmpty(note?.content) ? (
@@ -155,7 +244,8 @@ class NotePage extends Component<Props> {
                     }}
                     style={{ boxSizing: 'border-box' }}
                   >
-                    switch
+                    <i className="fa fa-exchange-alt" />
+                    switch to {isInputViewShown ? 'markdown' : 'input'}
                   </button>
                 </div>
                 {isInputViewShown && (
