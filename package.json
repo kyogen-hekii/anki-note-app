@@ -161,5 +161,10 @@
     "presets": [
       "react-app"
     ]
+  },
+  "devDependencies": {
+    "cac": "^6.5.8",
+    "firebase-admin": "^8.10.0",
+    "firestore-seed": "0.0.11"
   }
 }
