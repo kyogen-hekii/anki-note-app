@@ -87,6 +87,7 @@ const PageFooter = ({ history, isExistsCategory }: Props) => (
         </div>
       ) : (
         <div
+          key={p.id}
           style={{
             display: 'flex',
             flexDirection: 'column',
@@ -96,7 +97,7 @@ const PageFooter = ({ history, isExistsCategory }: Props) => (
             position: 'relative',
           }}
         >
-          <StyledLink key={p.id} to={p.to} canClick={p.clickable(isExistsCategory)} />
+          <StyledLink to={p.to} canClick={p.clickable(isExistsCategory)} />
           <span>
             <img
               src={p.logo}

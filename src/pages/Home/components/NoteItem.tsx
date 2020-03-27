@@ -23,7 +23,13 @@ export default ({ note, onClick }: any) => {
       <div className="mh10 pb16 mb8" style={{ fontSize: '1.2rem' }}>
         {removeMarkdown(note.content)}
       </div>
-      <TransformScaleDivButton style={{ position: 'absolute', top: 10, right: 10 }}>
+      <TransformScaleDivButton
+        style={{ position: 'absolute', top: 10, right: 10 }}
+        onClick={e => {
+          e.preventDefault()
+          e.stopPropagation()
+        }}
+      >
         <i className="fa fa-trash" />
       </TransformScaleDivButton>
     </div>
