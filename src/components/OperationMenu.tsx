@@ -14,7 +14,7 @@ const VerticalBar = styled.div`
   flex-flow: column;
 `
 
-const OperationButton = styled(TransformScaleButton)`
+const OperationButton = styled(TransformScaleButton)<{ isInvalid?: boolean }>`
   border-radius: 15px 0 0 15px;
   background-color: #fcaa00;
   height: 3rem;
@@ -32,7 +32,11 @@ export default ({ obj }: any) => (
       <OperationButton onClick={obj.onExportButtonClick} disabled={!obj.isAble.export}>
         <i className="fa fa-file-export" />
       </OperationButton>
-      <OperationButton onClick={obj.onDeleteButtonClick} disabled={!obj.isAble.delete}>
+      <OperationButton
+        onClick={obj.onDeleteButtonClick}
+        disabled={!obj.isAble.delete}
+        isInvalid={!obj.isAble.delete}
+      >
         <i className="fa fa-trash" />
       </OperationButton>
     </VerticalBar>
