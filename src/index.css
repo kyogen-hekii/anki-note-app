@@ -77,3 +77,14 @@ a:link,
 a:visited {
   text-decoration: none;
 }
+
+textarea {
+  width: 100vh;
+  height: 40vh;
+  font-size: 16px;
+}
+
+.touchable {
+  cursor: pointer;
+  user-select: none;
+}

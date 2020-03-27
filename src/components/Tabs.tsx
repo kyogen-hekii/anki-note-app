@@ -19,8 +19,8 @@ const Tabs = ({ currentTab, tabs, saveToStore }: Props) => {
               }}
               className="touchable"
               style={{
-                backgroundColor: currentTab === tab ? 'white' : 'rgba(255, 255, 255, 0.4)',
-                color: currentTab === tab ? '#FFC100' : 'white',
+                backgroundColor: currentTab === tab ? '#FCAA00' : '#757575',
+                color: currentTab === tab ? '#757575' : 'white',
               }}
             >
               {tab}

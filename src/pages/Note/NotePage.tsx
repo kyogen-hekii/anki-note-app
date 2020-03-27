@@ -62,9 +62,6 @@ class NotePage extends Component<Props> {
           content: 'please input',
         })
       },
-      onQuestionButtonClick: () => {
-        console.log('question_memo')
-      },
       onExportButtonClick: () => {
         console.log('')
       },
@@ -74,7 +71,6 @@ class NotePage extends Component<Props> {
       },
       isAble: {
         plus: true,
-        question: true,
         export: true,
         change: true,
       },
@@ -83,9 +79,6 @@ class NotePage extends Component<Props> {
       onPlusButtonClick: () => {
         this.addVocabularyRows()
       },
-      onQuestionButtonClick: () => {
-        console.log('question_vocab')
-      },
       onExportButtonClick: () => {
         console.log('')
       },
@@ -94,7 +87,6 @@ class NotePage extends Component<Props> {
       },
       isAble: {
         plus: true,
-        question: true,
         export: true,
         change: true,
       },
@@ -103,9 +95,6 @@ class NotePage extends Component<Props> {
       onPlusButtonClick: () => {
         this.props.openModal(SetCodepenModal)
       },
-      onQuestionButtonClick: () => {
-        console.log('question_codepen')
-      },
       onExportButtonClick: () => {
         console.log('')
       },
@@ -114,7 +103,6 @@ class NotePage extends Component<Props> {
       },
       isAble: {
         plus: true,
-        question: true,
         export: true,
         change: true,
       },
@@ -194,6 +182,7 @@ class NotePage extends Component<Props> {
               <>
                 {isInputViewShown ? (
                   <textarea
+                    style={{ backgroundColor: '#FFF4E0' }}
                     cols={30}
                     rows={10}
                     onChange={this.handleChangeMemo}

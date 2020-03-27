@@ -31,13 +31,13 @@ class HomePage extends Component<Props> {
     onPlusButtonClick: () => {
       this.props.openModal(SetNoteModal, this.initNotes)
     },
-    onQuestionButtonClick: () => {
-      console.log('question_memo')
-    },
     onExportButtonClick: () => {
       console.log('')
     },
     onChangeButtonClick: () => {
+      console.log('')
+    },
+    onDeleteButtonClick: () => {
       console.log('')
     },
     isAble: {
@@ -45,6 +45,7 @@ class HomePage extends Component<Props> {
       question: true,
       export: true,
       change: true,
+      delete: true,
     },
   }
   // #endregion
@@ -96,13 +97,25 @@ class HomePage extends Component<Props> {
     const { categoryOptions, notes } = this.props.page
     return (
       <div>
-        <Select
-          value={category}
-          onChange={this.handleClickCategory}
-          options={categoryOptions}
-          className="mb10"
-        />
-
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <span style={{ flexGrow: 1 }}>
+            <Select
+              value={category}
+              onChange={this.handleClickCategory}
+              options={categoryOptions}
+              className="mb10"
+              styles={{
+                control: styles => ({
+                  ...styles,
+                  border: 0,
+                  backgroundColor: '#757575',
+                  height: '4rem',
+                }),
+                singleValue: styles => ({ ...styles, color: '#EFEFEF' }),
+              }}
+            />
+          </span>
+        </div>
         <OperationMenu obj={this.obj} />
         {!_.isEmpty(category) &&
           notes

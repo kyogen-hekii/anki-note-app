@@ -48,26 +48,71 @@ type Props = {
   isExistsCategory: boolean
 }
 const PageFooter = ({ history, isExistsCategory }: Props) => (
-  <div style={{ position: 'fixed', left: 0, bottom: 0, backgroundColor: 'white', width: '100%', height: '8rem' }}>
-    <div className="pv20" style={{ display: 'flex', justifyContent: 'space-around' }}>
-      {pages.map(p =>
-        history.location.pathname === p.to ? (
-          <div key={p.id} style={{ display: 'flex', flexDirection: 'column', textAlign: 'center' }}>
-            <img key={p.id} src={p.logoOn} alt={p.id} width={p.width} height={p.height} />
-            <span>{p.id}</span>
-          </div>
-        ) : (
-          <StyledLink key={p.id} to={p.to} canClick={p.clickable(isExistsCategory)}>
-            <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'center' }}>
-              <img src={p.logo} alt={p.id} width={p.width} height={p.height} />
-              <span>{p.id}</span>
-            </div>
-          </StyledLink>
-        ),
-      )}
-      {/* <button onClick={this.handleClickPopUser}>Callendar</button> */}
-    </div>
+  <div
+    style={{
+      position: 'fixed',
+      left: 0,
+      bottom: 0,
+      backgroundColor: 'white',
+      width: '100vw',
+      height: '8rem',
+      display: 'flex',
+      justifyContent: 'space-around',
+    }}
+  >
+    {pages.map(p =>
+      history.location.pathname === p.to ? (
+        <div
+          key={p.id}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#8CD790',
+            width: '100vw', //すべて100%にしておけば、flexで等分できる
+          }}
+        >
+          <span>
+            <img
+              key={p.id}
+              src={p.logoOn}
+              alt={p.id}
+              width={p.width}
+              height={p.height}
+              style={{}}
+            />
+          </span>
+          <span>{p.id}</span>
+        </div>
+      ) : (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center', //横を真ん中に
+            justifyContent: 'center',
+            width: '100vw',
+            position: 'relative',
+          }}
+        >
+          <StyledLink key={p.id} to={p.to} canClick={p.clickable(isExistsCategory)} />
+          <span>
+            <img
+              src={p.logo}
+              alt={p.id}
+              width={p.width}
+              height={p.height}
+              //style={{ display: 'block', margin: 'auto' }}
+            />
+          </span>
+          <span>{p.id}</span>
+        </div>
+      ),
+    )}
+    {/* <button onClick={this.handleClickPopUser}>Callendar</button> */}
   </div>
+  // </div>
 )
 const mapStateToProps = (state: any) => ({
   selectedData: state.selectedData,
@@ -79,4 +124,9 @@ export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PageFoote
 
 const StyledLink = styled(({ canClick, ...props }) => <Link {...props} />)`
   pointer-events: ${({ canClick }) => (canClick ? 'all' : 'none')};
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
 `

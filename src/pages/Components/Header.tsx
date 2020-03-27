@@ -8,11 +8,13 @@ type Props = {
 const PageHeader = ({ selectedData }: Props) => {
   const { category, note } = selectedData
   return (
-    <div style={{ display: 'flex', backgroundColor: '#FEFEFE', alignItems: 'center' }}>
+    <div style={{ display: 'flex', backgroundColor: '#A8DBA8', alignItems: 'center' }}>
       <img src={SiteLogo} alt="logo" width={50} height={50} />
-      <span className="mr5">{category?.label}</span>
-      <span className="mr5">{note ? '>' : ''}</span>
-      <span>{note?.title}</span>
+      <span style={{ fontSize: '1.7rem', color: 'white' }}>
+        <span className="mr5">{category?.label}</span>
+        <span className="mr5">{note ? '>' : ''}</span>
+        <span>{note?.title}</span>
+      </span>
     </div>
   )
 }
