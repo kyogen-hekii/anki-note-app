@@ -88,3 +88,11 @@ textarea {
   cursor: pointer;
   user-select: none;
 }
+
+.left {
+  color: white;
+}
+
+.left.selected {
+  color: black;
+}

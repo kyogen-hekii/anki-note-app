@@ -57,7 +57,6 @@ export const setNote = async (note: any, categoryName?: string) => {
       .then(ss => ss.docs.map(e => e.data()))
     categoryRefName = catData.find(e => e)?.label.toString()
   }
-  console.log('saved: ', note)
   noteRef
     .doc(`${categoryName || categoryRefName}-${pascalize(note.title)}`)
     .set(note)

@@ -28,6 +28,7 @@ class NotePage extends Component<Props> {
     user: {},
     isInputViewShown: true,
     isChanged: false,
+    hideMode: false,
   }
   obj: any = {
     memo: {
@@ -44,8 +45,13 @@ class NotePage extends Component<Props> {
         })
       },
       onExportButtonClick: () => {
-        //
-        console.log('')
+        const { note } = this.props.selectedData
+        if (!note) {
+          return
+        }
+        const fileName = `${note.title}.md`
+        const exportData = note.content
+        this.exportFile(fileName, exportData)
       },
       onChangeButtonClick: () => {
         const { isInputViewShown } = this.state
@@ -84,19 +90,11 @@ class NotePage extends Component<Props> {
           2,
         )
         const fileName = `${note.title}.json`
-        const downLoadLink = document.createElement('a')
-        downLoadLink.download = fileName
-        downLoadLink.href = URL.createObjectURL(new Blob([resultJson], { type: 'text.plain' }))
-        downLoadLink.dataset.downloadurl = [
-          'text.plain',
-          downLoadLink.download,
-          downLoadLink.href,
-        ].join(':')
-        downLoadLink.click()
-        return
+        this.exportFile(fileName, resultJson)
       },
       onChangeButtonClick: () => {
-        console.log('')
+        const { hideMode } = this.state
+        this.setState({ hideMode: !hideMode })
       },
       isAble: {
         plus: true,
@@ -172,6 +170,9 @@ class NotePage extends Component<Props> {
       return
     }
     const { vocabulary } = note
+    if (!vocabulary) {
+      return
+    }
 
     if (vocabulary[-1]?.left || vocabulary[-1]?.right) {
       return
@@ -257,12 +258,23 @@ class NotePage extends Component<Props> {
 
     return vocabularyRows.map((e: any, i: number) => {
       return [
-        { value: e.left, width: 200, readOnly: i === 0 },
-        { value: e.right, width: 200, readOnly: i === 0 },
+        { value: e.left, width: 200, readOnly: i === 0, className: 'left' },
+        { value: e.right, width: 200, readOnly: i === 0, className: 'right' },
       ]
     })
   }
 
+  private exportFile(fileName: string, exportData: any) {
+    const downLoadLink = document.createElement('a')
+    downLoadLink.download = fileName
+    downLoadLink.href = URL.createObjectURL(new Blob([exportData], { type: 'text.plain' }))
+    downLoadLink.dataset.downloadurl = [
+      'text.plain',
+      downLoadLink.download,
+      downLoadLink.href,
+    ].join(':')
+    downLoadLink.click()
+  }
   // #endregion
 
   // #region render
@@ -314,7 +326,8 @@ class NotePage extends Component<Props> {
               <div style={{ backgroundColor: 'white', display: 'inline-block' }}>
                 <ReactDataSheet
                   data={serializedVocabulary}
-                  valueRenderer={(cell: any) => {
+                  valueRenderer={(cell: any, r: number, c: number) => {
+                    cell.className = this.state.hideMode && c === 1 ? 'left' : ''
                     cell.width = 200
                     return cell.value
                   }}
