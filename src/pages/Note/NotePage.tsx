@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Markdown from 'react-markdown'
 import SimpleFetch from '../../api/SimpleFetch'
-import { getUser } from '../../api/queries'
+import { getUser, setNote } from '../../api/queries'
 import { connect } from 'react-redux'
 import { openModal } from '../../reducers/modal'
 import { saveToStore } from '../../utils/createVariantReducer'
@@ -9,21 +9,10 @@ import { Link } from 'react-router-dom'
 import _ from 'lodash'
 import ReactDataSheet from 'react-datasheet'
 import 'react-datasheet/lib/react-datasheet.css'
-//@ts-ignore
-import Codepen from 'react-codepen-embed'
 import SetCodepenModal from './components/SetCodepenModal'
 import OperationMenu from '../../components/OperationMenu'
 import Tabs from '../../components/Tabs'
-
-const CodepenEmbedded = (props: any) => {
-  const h: string = props.hash || 'JyxeVP'
-  return (
-    // HACK: keyを付与することで、再描画できる
-    <div key={h}>
-      <Codepen hash={h} user="someone" />
-    </div>
-  )
-}
+import EmbeddedCodepen from './components/EmbeddedCodepen'
 
 type Props = {
   history: any
@@ -38,14 +27,6 @@ class NotePage extends Component<Props> {
   state: any = {
     user: {},
     isInputViewShown: true,
-    grid: [
-      [
-        { value: 'A', readOnly: true },
-        { value: 'B', readOnly: true },
-      ],
-      [{ value: 1 }, { value: 3 }],
-      [{ value: 2 }, { value: 4 }],
-    ],
     isChanged: false,
   }
   obj: any = {
@@ -63,6 +44,7 @@ class NotePage extends Component<Props> {
         })
       },
       onExportButtonClick: () => {
+        //
         console.log('')
       },
       onChangeButtonClick: () => {
@@ -76,11 +58,42 @@ class NotePage extends Component<Props> {
       },
     },
     vocabulary: {
-      onPlusButtonClick: () => {
-        this.addVocabularyRows()
+      onPlusButtonClick: async () => {
+        const { note } = this.props.selectedData
+        const { vocabulary } = note
+        if (!vocabulary) {
+          await this.props.saveToStore('selectedData', 'note', { ...note, vocabulary: [] })
+        }
+        this.addVocabularyRows({ isFirst: false })
       },
-      onExportButtonClick: () => {
-        console.log('')
+      onExportButtonClick: async () => {
+        await this.deleteEmptyRows()
+        const { note } = this.props.selectedData
+        const { vocabulary } = note
+
+        if (!vocabulary) {
+          console.log('data is nothing')
+          return
+        }
+
+        const resultJson = JSON.stringify(
+          vocabulary.reduce((accumulator: any, currentValue: any, index: number) => {
+            return Object.assign(accumulator, { [index + 1]: currentValue })
+          }, {}),
+          undefined,
+          2,
+        )
+        const fileName = `${note.title}.json`
+        const downLoadLink = document.createElement('a')
+        downLoadLink.download = fileName
+        downLoadLink.href = URL.createObjectURL(new Blob([resultJson], { type: 'text.plain' }))
+        downLoadLink.dataset.downloadurl = [
+          'text.plain',
+          downLoadLink.download,
+          downLoadLink.href,
+        ].join(':')
+        downLoadLink.click()
+        return
       },
       onChangeButtonClick: () => {
         console.log('')
@@ -111,49 +124,145 @@ class NotePage extends Component<Props> {
   // #endregion
 
   // #region componentDidMount
-  async componentDidMount() {
-    const user = await SimpleFetch(getUser(1))
-    this.setState({ user })
+  componentDidMount() {
+    // const user = await SimpleFetch(getUser(1))
+    // this.setState({ user })
     this.props.saveToStore('page', 'currentTab', Object.keys(this.obj)[0])
-    //const { note } = this.props.selectedData
-    // if (_.isEmpty(note)) {
-    //   this.props.saveToStore('selectedData', 'note', {
-    //     ...note,
-    //     title: 'new',
-    //     content: 'please input',
-    //   })
-    // }
-    this.addVocabularyRows()
+
+    const { note } = this.props.selectedData
+    if (note && note.vocabulary) {
+      // vocabulary
+      //this.deleteEmptyRows()
+      this.addVocabularyRows({ isFirst: true })
+    }
+  }
+  componentWillUnmount() {
+    this.deleteEmptyRows()
   }
   // #endregion
 
   // #region handler
-  handleChangeMemo = (e: any) => {
+  handleChangeMemo = async (e: any) => {
     const { note } = this.props.selectedData
     const content = e.target?.value
-    this.props.saveToStore('selectedData', 'note', { ...note, content })
+    this.props.saveToStore('selectedData', 'note', { ...note, content }, setNote)
+  }
+  handleChangeVocabulary = (changes: ReactDataSheet.CellsChangedArgs<any, string>) => {
+    const { note } = this.props.selectedData
+    const { vocabulary }: { vocabulary: any[] } = note
+    const serializedVocabulary = this.serializeVocabulary(vocabulary)
+    changes.forEach(({ cell, row, col, value }) => {
+      serializedVocabulary[row][col] = { ...serializedVocabulary[row][col], value }
+    })
+    // const parsedVocabulary = this.parseVocabulary(serializedVocabulary)
+    // console.log('will saved: ', parsedVocabulary)
+    this.props.saveToStore(
+      'selectedData',
+      'note',
+      { ...note, vocabulary: this.parseVocabulary(serializedVocabulary) },
+      setNote,
+    )
   }
   // #endregion
 
   // #region private method
+  private deleteEmptyRows = async () => {
+    const { note } = this.props.selectedData
+    if (!note) {
+      return
+    }
+    const { vocabulary } = note
+
+    if (vocabulary[-1]?.left || vocabulary[-1]?.right) {
+      return
+    }
+
+    let isFinished = false
+    const vocabularyRows = vocabulary
+      .slice()
+      .reverse()
+      .map((v: any) => {
+        if (isFinished || v.left || v.right) {
+          isFinished = true
+          return v
+        }
+        return null
+      })
+      .filter((v: any) => v)
+      .reverse()
+
+    this.props.saveToStore(
+      'selectedData',
+      'note',
+      {
+        ...note,
+        vocabulary: vocabularyRows,
+      },
+      setNote,
+    )
+  }
   /**
    * vocabulary gridの行数を増やす
-   * e.g.) 9→10, 14→20, 20→30
+   * e.g.) 9→10, 14→20, 20→30(isFirst=falseの場合のみ,true時は20のまま)
    */
-  private addVocabularyRows = () => {
-    const { grid } = this.state
-    const plusRowNum = 10 - ((grid.length - 1) % 10)
+  private addVocabularyRows = ({ isFirst = false }: { isFirst?: boolean }) => {
+    const { note } = this.props.selectedData
+    if (!note) {
+      return
+    }
 
-    const g = grid.concat(
-      [...Array(plusRowNum ? plusRowNum : 10)].map(() => {
-        return [{ value: '' }, { value: '' }]
+    const { vocabulary } = note
+    let vocabularyRows = vocabulary as any[]
+
+    const plusRowNum = (10 - (vocabularyRows.length % 10)) % 10
+    vocabularyRows = vocabularyRows.concat(
+      [...Array(plusRowNum ? plusRowNum : isFirst ? 0 : 10)].map(() => {
+        return { left: '', right: '' }
       }),
     )
-    this.setState({ grid: g })
+    // memo: ここで保存しなくても、よそで保存処理走る可能性あるけど良しとする。
+    this.props.saveToStore('selectedData', 'note', {
+      ...note,
+      vocabulary: vocabularyRows,
+    })
   }
+
   private codepenUrlToHash = (codepenUrl: string) => {
     return codepenUrl.split('/').slice(-1)[0]
   }
+  /**
+   * DB保存時用のparse
+   */
+  private parseVocabulary = (vocabulary: any[]) => {
+    const arr = vocabulary
+      .filter((e, i) => i > 0)
+      .map((e: any[]) =>
+        // memo:[ [{value: leftvalue},{value: rightvalue}],...]このようなペアの状態で表示している(他propsは略)
+        e.reduce((left: any, right: any) => {
+          return { left: left.value, right: right.value }
+        }),
+      )
+    return arr
+  }
+  /**
+   * DBから取得した、storeのデータを表示用にserialize
+   */
+  private serializeVocabulary = (vocabulary: any[]) => {
+    if (!vocabulary) {
+      return []
+    }
+    const vocabularyHeader = [{ left: 'A', right: 'B' }]
+    let vocabularyRows = vocabulary as any[]
+    vocabularyRows = vocabularyHeader.concat(vocabularyRows)
+
+    return vocabularyRows.map((e: any, i: number) => {
+      return [
+        { value: e.left, width: 200, readOnly: i === 0 },
+        { value: e.right, width: 200, readOnly: i === 0 },
+      ]
+    })
+  }
+
   // #endregion
 
   // #region render
@@ -161,6 +270,8 @@ class NotePage extends Component<Props> {
     const { category, note } = this.props.selectedData
     const { currentTab = 'memo' } = this.props.page
     const { isInputViewShown } = this.state
+    const serializedVocabulary = this.serializeVocabulary(note?.vocabulary)
+
     if (_.isEmpty(category) || _.isEmpty(note)) {
       return (
         <div>
@@ -196,22 +307,24 @@ class NotePage extends Component<Props> {
           </>
         )}
         {currentTab === 'vocabulary' && (
-          <div style={{ backgroundColor: 'white', display: 'inline-block' }}>
-            <ReactDataSheet
-              data={this.state.grid}
-              valueRenderer={(cell: any) => {
-                cell.width = 200
-                return cell.value
-              }}
-              onCellsChanged={changes => {
-                const grid = this.state.grid.map((row: any) => [...row])
-                changes.forEach(({ cell, row, col, value }) => {
-                  grid[row][col] = { ...grid[row][col], value }
-                })
-                this.setState({ grid })
-              }}
-            />
-          </div>
+          <>
+            {_.isEmpty(note?.vocabulary) ? (
+              <div>please create vocabulary with right + button</div>
+            ) : (
+              <div style={{ backgroundColor: 'white', display: 'inline-block' }}>
+                <ReactDataSheet
+                  data={serializedVocabulary}
+                  valueRenderer={(cell: any) => {
+                    cell.width = 200
+                    return cell.value
+                  }}
+                  onCellsChanged={changes => {
+                    this.handleChangeVocabulary(changes)
+                  }}
+                />
+              </div>
+            )}
+          </>
           //<ReactDataSheet data={this.state.grid2} valueRenderer={(cell: any) => cell.value} />
         )}
         {currentTab === 'codepen' && (
@@ -221,7 +334,7 @@ class NotePage extends Component<Props> {
             ) : (
               <>
                 <div>
-                  <CodepenEmbedded hash={this.codepenUrlToHash(note.codepenUrl)} />
+                  <EmbeddedCodepen hash={this.codepenUrlToHash(note.codepenUrl)} />
                 </div>
               </>
             )}

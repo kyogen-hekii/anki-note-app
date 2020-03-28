@@ -21,6 +21,7 @@ export default (target: string) => {
 }
 
 // action creator
-export const saveToStore = (target: string, key: string, value: any) => {
+export const saveToStore = (target: string, key: string, value: any, setData?: Function) => {
+  setData && setData(value)
   return { type: 'SAVE_TO_STORE', target, payload: { key, value } }
 }

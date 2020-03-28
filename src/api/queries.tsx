@@ -47,16 +47,17 @@ export const getNotes = async () => {
   return noteRef.get().then(ss => ss.docs.map(e => e.data()))
 }
 export const setNote = async (note: any, categoryName?: string) => {
-  const noteRef = await firebaseDb.collection(TABLE_NOTES)
+  const noteRef = firebaseDb.collection(TABLE_NOTES)
   let categoryRefName
   if (!categoryName) {
-    const categoryRef = await firebaseDb.collection(TABLE_CATEGORIES)
+    const categoryRef = firebaseDb.collection(TABLE_CATEGORIES)
     const catData = await categoryRef
       .where('id', '==', note.categoryId)
       .get()
       .then(ss => ss.docs.map(e => e.data()))
     categoryRefName = catData.find(e => e)?.label.toString()
   }
+  console.log('saved: ', note)
   noteRef
     .doc(`${categoryName || categoryRefName}-${pascalize(note.title)}`)
     .set(note)
