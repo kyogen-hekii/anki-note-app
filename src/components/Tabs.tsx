@@ -1,12 +1,9 @@
 import React from 'react'
-import { connect } from 'react-redux'
-
-import { saveToStore } from '../utils/createVariantReducer'
 import TabButton from './TabButton'
 
-type Props = { currentTab: string; tabs: string[]; saveToStore: Function }
+type Props = { currentTab: string; tabs: string[]; changeTab: Function }
 
-const Tabs = ({ currentTab, tabs, saveToStore }: Props) => {
+export default ({ currentTab, tabs, changeTab }: Props) => {
   return (
     <div>
       <div style={{ display: 'flex', overflowX: 'scroll' }}>
@@ -15,7 +12,7 @@ const Tabs = ({ currentTab, tabs, saveToStore }: Props) => {
             <TabButton
               key={tab}
               onClick={() => {
-                saveToStore('page', 'currentTab', tab)
+                changeTab(tab)
               }}
               className="touchable"
               style={{
@@ -31,13 +28,3 @@ const Tabs = ({ currentTab, tabs, saveToStore }: Props) => {
     </div>
   )
 }
-
-// extends Component<Props>
-const mapStateToProps = (state: any, ownProps: any) => ({
-  currentTab: state.page.currentTab,
-  tabs: ownProps.tabs,
-})
-const mapDispatchToProps = {
-  saveToStore,
-}
-export default connect(mapStateToProps, mapDispatchToProps)(Tabs)

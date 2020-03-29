@@ -26,6 +26,7 @@ class NotePage extends Component<Props> {
   // TODO: local stateをglobal stateに昇格
   state: any = {
     user: {},
+    currentTab: 'memo',
     isInputViewShown: true,
     isChanged: false,
     hideMode: false,
@@ -79,12 +80,11 @@ class NotePage extends Component<Props> {
   componentDidMount() {
     // const user = await SimpleFetch(getUser(1))
     // this.setState({ user })
-    this.props.saveToStore('page', 'currentTab', Object.keys(this.operationMenuObj)[0])
+    this.setState({ currentTab: Object.keys(this.operationMenuObj)[0] })
 
     const { note } = this.props.selectedData
     if (note && note.vocabulary) {
       // vocabulary
-      //this.deleteEmptyRows()
       this.addVocabularyRows({ isFirst: true })
     }
   }
@@ -327,8 +327,7 @@ class NotePage extends Component<Props> {
   // #region render
   render() {
     const { category, note } = this.props.selectedData
-    const { currentTab = 'memo' } = this.props.page
-    const { isInputViewShown } = this.state
+    const { isInputViewShown, currentTab } = this.state
     const serializedVocabulary = this.serializeVocabulary(note?.vocabulary)
 
     if (_.isEmpty(category) || _.isEmpty(note)) {
@@ -341,7 +340,11 @@ class NotePage extends Component<Props> {
 
     return (
       <>
-        <Tabs tabs={Object.keys(this.operationMenuObj)} />
+        <Tabs
+          tabs={Object.keys(this.operationMenuObj)}
+          currentTab={currentTab}
+          changeTab={(tab: string) => this.setState({ currentTab: tab })}
+        />
         <OperationMenu obj={this.operationMenuObj[currentTab]} />
 
         {currentTab === 'memo' && (
