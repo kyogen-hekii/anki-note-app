@@ -63,6 +63,7 @@
     "react": "^16.13.0",
     "react-app-polyfill": "^1.0.6",
     "react-codepen-embed": "^1.0.1",
+    "react-copy-to-clipboard": "^5.0.2",
     "react-datasheet": "^1.4.1",
     "react-dev-utils": "^10.2.0",
     "react-dom": "^16.13.0",

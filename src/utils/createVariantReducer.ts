@@ -22,6 +22,10 @@ export default (target: string) => {
 
 // action creator
 export const saveToStore = (target: string, key: string, value: any, setData?: Function) => {
-  setData && setData(value)
+  try {
+    setData && setData(value)
+  } catch (error) {
+    console.error(error)
+  }
   return { type: 'SAVE_TO_STORE', target, payload: { key, value } }
 }

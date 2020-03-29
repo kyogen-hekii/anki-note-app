@@ -4,8 +4,8 @@ const CLOSE_MODAL = 'CLOSE_MODAL'
 // #endregion
 
 // #region actions
-export const openModal = (Modal: any, callBack?: Function) => {
-  return { type: OPEN_MODAL, payload: { Modal, callBack } }
+export const openModal = (Modal: any, props?: Object, callBack?: Function) => {
+  return { type: OPEN_MODAL, payload: { Modal, props, callBack } }
 }
 export const closeModal = () => {
   return { type: CLOSE_MODAL }
@@ -24,6 +24,7 @@ export default (state = initialState, action: any) => {
         ...state,
         isShow: true,
         Modal: action.payload.Modal,
+        props: action.payload.props,
         callBack: action.payload.callBack,
       }
     case CLOSE_MODAL:

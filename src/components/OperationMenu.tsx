@@ -32,13 +32,6 @@ export default ({ obj }: any) => (
       <OperationButton onClick={obj.onExportButtonClick} disabled={!obj.isAble.export}>
         <i className="fa fa-file-export" />
       </OperationButton>
-      <OperationButton
-        onClick={obj.onDeleteButtonClick}
-        disabled={!obj.isAble.delete}
-        isInvalid={!obj.isAble.delete}
-      >
-        <i className="fa fa-trash" />
-      </OperationButton>
     </VerticalBar>
   </RelativeWrapper>
 )

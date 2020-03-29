@@ -16,7 +16,17 @@ class Modal extends Component<Props> {
   }
 
   render() {
-    const { isShow, Modal, callBack } = this.props.modal
+    const {
+      isShow,
+      Modal,
+      props,
+      callBack,
+    }: {
+      isShow: boolean
+      Modal: React.FC<{ props?: any; callBack?: Function }>
+      props: any
+      callBack: Function
+    } = this.props.modal
 
     if (!isShow) {
       return null
@@ -54,7 +64,7 @@ class Modal extends Component<Props> {
               borderRadius: 8,
             }}
           >
-            <div className="m20">{Modal && <Modal callBack={callBack} />}</div>
+            <div className="m20">{Modal && <Modal props={props} callBack={callBack} />}</div>
 
             <div className="align-center">
               <button type="button" onClick={this.handleClose}>

@@ -30,93 +30,47 @@ class NotePage extends Component<Props> {
     isChanged: false,
     hideMode: false,
   }
-  obj: any = {
+  allClickable: any = {
+    plus: true,
+    export: true,
+    change: true,
+  }
+  operationMenuObj: any = {
     memo: {
       onPlusButtonClick: () => {
-        const { note } = this.props.selectedData
-        if (!_.isEmpty(note?.content)) {
-          console.log('already exists')
-          return
-        }
-        this.props.saveToStore('selectedData', 'note', {
-          ...note,
-          title: 'new',
-          content: 'please input',
-        })
+        this.memoPlusButtonClick()
       },
       onExportButtonClick: () => {
-        const { note } = this.props.selectedData
-        if (!note) {
-          return
-        }
-        const fileName = `${note.title}.md`
-        const exportData = note.content
-        this.exportFile(fileName, exportData)
+        this.memoExportButtonClick()
       },
       onChangeButtonClick: () => {
-        const { isInputViewShown } = this.state
-        this.setState({ isInputViewShown: !isInputViewShown })
+        this.memoChangeButtonClick()
       },
-      isAble: {
-        plus: true,
-        export: true,
-        change: true,
-      },
+      isAble: this.allClickable,
     },
     vocabulary: {
-      onPlusButtonClick: async () => {
-        const { note } = this.props.selectedData
-        const { vocabulary } = note
-        if (!vocabulary) {
-          await this.props.saveToStore('selectedData', 'note', { ...note, vocabulary: [] })
-        }
-        this.addVocabularyRows({ isFirst: false })
+      onPlusButtonClick: () => {
+        this.vocabularyPlusButtonClick()
       },
-      onExportButtonClick: async () => {
-        await this.deleteEmptyRows()
-        const { note } = this.props.selectedData
-        const { vocabulary } = note
-
-        if (!vocabulary) {
-          console.log('data is nothing')
-          return
-        }
-
-        const resultJson = JSON.stringify(
-          vocabulary.reduce((accumulator: any, currentValue: any, index: number) => {
-            return Object.assign(accumulator, { [index + 1]: currentValue })
-          }, {}),
-          undefined,
-          2,
-        )
-        const fileName = `${note.title}.json`
-        this.exportFile(fileName, resultJson)
+      onExportButtonClick: () => {
+        this.vocabularyExportButtonClick()
       },
       onChangeButtonClick: () => {
-        const { hideMode } = this.state
-        this.setState({ hideMode: !hideMode })
+        this.vocabularyChangeButtonClick()
       },
-      isAble: {
-        plus: true,
-        export: true,
-        change: true,
-      },
+      isAble: this.allClickable,
     },
     codepen: {
       onPlusButtonClick: () => {
-        this.props.openModal(SetCodepenModal)
+        this.codepenPlusButtonClick()
       },
       onExportButtonClick: () => {
-        console.log('')
+        this.codepenExportButtonClick()
       },
       onChangeButtonClick: () => {
-        console.log('')
+        this.codepenChangeButtonClick()
       },
-      isAble: {
-        plus: true,
-        export: true,
-        change: true,
-      },
+      isAble: this.allClickable,
     },
   }
   // #endregion
@@ -125,7 +79,7 @@ class NotePage extends Component<Props> {
   componentDidMount() {
     // const user = await SimpleFetch(getUser(1))
     // this.setState({ user })
-    this.props.saveToStore('page', 'currentTab', Object.keys(this.obj)[0])
+    this.props.saveToStore('page', 'currentTab', Object.keys(this.operationMenuObj)[0])
 
     const { note } = this.props.selectedData
     if (note && note.vocabulary) {
@@ -164,6 +118,71 @@ class NotePage extends Component<Props> {
   // #endregion
 
   // #region private method
+
+  // #region memo
+  memoPlusButtonClick = () => {
+    const { note } = this.props.selectedData
+    if (!_.isEmpty(note?.content)) {
+      console.log('already exists')
+      return
+    }
+    this.props.saveToStore('selectedData', 'note', {
+      ...note,
+      title: 'new',
+      content: 'please input',
+    })
+  }
+  private memoExportButtonClick = () => {
+    const { note } = this.props.selectedData
+    if (!note) {
+      return
+    }
+    const fileName = `${note.title}.md`
+    const exportData = note.content
+    this.exportFile(fileName, exportData)
+  }
+  private memoChangeButtonClick = () => {
+    const { isInputViewShown } = this.state
+    this.setState({ isInputViewShown: !isInputViewShown })
+  }
+  // #endregion
+
+  // #region vocabulary
+  vocabularyPlusButtonClick = async () => {
+    const { note } = this.props.selectedData
+    const { vocabulary } = note
+    if (!vocabulary) {
+      await this.props.saveToStore('selectedData', 'note', { ...note, vocabulary: [] })
+    }
+    this.addVocabularyRows({ isFirst: false })
+  }
+  vocabularyExportButtonClick = async () => {
+    await this.deleteEmptyRows()
+    const { note } = this.props.selectedData
+    const { vocabulary } = note
+
+    if (!vocabulary) {
+      console.log('data is nothing')
+      return
+    }
+
+    const resultJson = JSON.stringify(
+      vocabulary.reduce((accumulator: any, currentValue: any, index: number) => {
+        return Object.assign(accumulator, { [index + 1]: currentValue })
+      }, {}),
+      undefined,
+      2,
+    )
+    const fileName = `${note.title}.json`
+    this.exportFile(fileName, resultJson)
+  }
+  vocabularyChangeButtonClick = () => {
+    const { hideMode } = this.state
+    this.setState({ hideMode: !hideMode })
+  }
+  // #endregion
+
+  // #region vocabulary rows
   private deleteEmptyRows = async () => {
     const { note } = this.props.selectedData
     if (!note) {
@@ -263,6 +282,34 @@ class NotePage extends Component<Props> {
       ]
     })
   }
+  // #endregion
+
+  // #region codepen
+  private codepenPlusButtonClick = () => {
+    const { note } = this.props.selectedData
+    if (!_.isEmpty(note?.codepenUrl)) {
+      console.log('already exists')
+      return
+    }
+    this.props.openModal(SetCodepenModal)
+  }
+  private codepenExportButtonClick = () => {
+    const { note } = this.props.selectedData
+    if (_.isEmpty(note?.codepenUrl)) {
+      console.log('no data')
+      return
+    }
+    this.props.openModal(SetCodepenModal, { isExport: true })
+  }
+  private codepenChangeButtonClick = () => {
+    const { note } = this.props.selectedData
+    if (_.isEmpty(note?.codepenUrl)) {
+      console.log('no data')
+      return
+    }
+    this.props.openModal(SetCodepenModal, { isChange: true })
+  }
+  // #endregion
 
   private exportFile(fileName: string, exportData: any) {
     const downLoadLink = document.createElement('a')
@@ -294,8 +341,8 @@ class NotePage extends Component<Props> {
 
     return (
       <>
-        <Tabs tabs={Object.keys(this.obj)} />
-        <OperationMenu obj={this.obj[currentTab]} />
+        <Tabs tabs={Object.keys(this.operationMenuObj)} />
+        <OperationMenu obj={this.operationMenuObj[currentTab]} />
 
         {currentTab === 'memo' && (
           <>

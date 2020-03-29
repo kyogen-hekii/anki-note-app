@@ -32,14 +32,10 @@ class SetModal extends Component<Props> {
       content: '',
       codepenUrl: '',
     }
-    try {
-      await setNote(newNote)
-    } catch (e) {
-      console.error(e)
-    }
-    this.props.saveToStore('selectedData', 'note', newNote)
+    this.props.saveToStore('selectedData', 'note', newNote, setNote)
 
     const { callBack }: any = this.props
+    console.log('callBack:', callBack)
     callBack && (await callBack())
     this.props.closeModal()
   }
@@ -74,7 +70,6 @@ class SetModal extends Component<Props> {
 const mapStateToProps = (state: any, ownProps: any) => ({
   selectedData: state.selectedData,
   callBack: ownProps.callBack,
-  // page: state.page,
 })
 
 const mapDispatchToProps = {

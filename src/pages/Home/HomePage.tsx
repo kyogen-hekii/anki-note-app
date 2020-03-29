@@ -27,25 +27,18 @@ class HomePage extends Component<Props> {
   state: any = {
     user: {},
   }
-  obj: any = {
+  operationMenuObj: any = {
     onPlusButtonClick: () => {
-      this.props.openModal(SetNoteModal, this.initNotes)
-    },
-    onExportButtonClick: () => {
-      console.log('')
-    },
-    onChangeButtonClick: () => {
-      console.log('')
-    },
-    onDeleteButtonClick: () => {
-      console.log('')
+      const { category } = this.props.selectedData
+      if (!category) {
+        return
+      }
+      this.props.openModal(SetNoteModal, {}, this.initNotes)
     },
     isAble: {
       plus: true,
-      question: true,
-      export: true,
-      change: true,
-      delete: true,
+      export: false,
+      change: false,
     },
   }
   // #endregion
@@ -64,7 +57,7 @@ class HomePage extends Component<Props> {
   // #region handler
   handleClickCategory = (selectedCategory: any) => {
     if (selectedCategory.id === this.CREATE_ID) {
-      this.props.openModal(SetCategoryModal, this.initCategoryOptions)
+      this.props.openModal(SetCategoryModal, {}, this.initCategoryOptions)
       return
     }
     this.props.saveToStore('selectedData', 'category', selectedCategory)
@@ -116,7 +109,7 @@ class HomePage extends Component<Props> {
             />
           </span>
         </div>
-        <OperationMenu obj={this.obj} />
+        <OperationMenu obj={this.operationMenuObj} />
         {!_.isEmpty(category) &&
           notes
             .filter((n: any) => n.categoryId === category.id)
