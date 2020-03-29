@@ -10,6 +10,8 @@ import PageHeader from './pages/Components/Header'
 import PageFooter from './pages/Components/Footer'
 import HomePage from './pages/Home/HomePage'
 import NotePage from './pages/Note/NotePage'
+import AnkiPage from './pages/Anki/AnkiPage'
+import AnkiGamePage from './pages/Anki/AnkiGamePage'
 import Modal from './containers/Modal'
 
 const store = configureStore()
@@ -17,8 +19,15 @@ const store = configureStore()
 function App() {
   return (
     <Provider store={store}>
-      <PageHeader />
-      <div style={{ backgroundColor: '#F5F5F5', paddingBottom: 20, minHeight: '100vh' }}>
+      <div
+        style={{
+          backgroundColor: '#F5F5F5',
+          paddingBottom: 20,
+          height: '95vh',
+          overflowY: 'scroll',
+        }}
+      >
+        <PageHeader />
         <ConnectedRouter history={history}>
           <Switch>
             <Route exact path="/login" component={DummyPage} />
@@ -34,6 +43,10 @@ function App() {
           </Switch>
           <Switch>
             <Route exact path="/note" component={NotePage} />
+          </Switch>
+          <Switch>
+            <Route exact path="/anki/:categoryId/:noteId" component={AnkiGamePage} />
+            <Route exact path="/anki" component={AnkiPage} />
           </Switch>
           <Switch>
             <Route exact path="/profile" component={DummyPage} />

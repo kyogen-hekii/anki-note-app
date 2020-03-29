@@ -46,6 +46,14 @@ export const getNotes = async () => {
   const noteRef = firebaseDb.collection(TABLE_NOTES)
   return noteRef.get().then(ss => ss.docs.map(e => e.data()))
 }
+export const getNotesByCategoryId = async (categoryId: number) => {
+  const noteRef = firebaseDb.collection(TABLE_NOTES).where('categoryId', '==', Number(categoryId))
+  return noteRef.get().then(ss => ss.docs.map(e => e.data()))
+}
+export const getNote = async (noteId: number) => {
+  const noteRef = firebaseDb.collection(TABLE_NOTES).where('id', '==', Number(noteId))
+  return noteRef.get().then(ss => ss.docs.map(e => e.data()))
+}
 export const setNote = async (note: any, categoryName?: string) => {
   const noteRef = firebaseDb.collection(TABLE_NOTES)
   let categoryRefName
