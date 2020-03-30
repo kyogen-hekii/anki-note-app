@@ -1,5 +1,6 @@
-import { firebaseDb } from '../firebase'
+import { firebaseDb, firebaseAuth } from '../firebase'
 import { pascalize } from 'humps'
+import _ from 'lodash'
 
 export const getUser = (userId: number) => {
   const user = {
@@ -31,11 +32,14 @@ export const getCategories = async () => {
   const categoryRef = firebaseDb.collection(TABLE_CATEGORIES)
   return categoryRef.get().then(ss => ss.docs.map(e => e.data()))
 }
-export const setCategory = async (category: any) => {
+/**
+ * create: 存在する場合上書きしない
+ */
+export const createCategory = async (category: any) => {
   const categoryRef = firebaseDb.collection(TABLE_CATEGORIES)
   categoryRef
     .doc(category.label)
-    .set(category)
+    .set(category, { mergeFields: [] })
     .catch(e => console.log(e))
 }
 // #endregion
@@ -54,20 +58,120 @@ export const getNote = async (noteId: number) => {
   const noteRef = firebaseDb.collection(TABLE_NOTES).where('id', '==', Number(noteId))
   return noteRef.get().then(ss => ss.docs.map(e => e.data()))
 }
-export const setNote = async (note: any, categoryName?: string) => {
+/**
+ * create: 存在する場合上書きしない
+ */
+export const createNote = async (note: any, argCategoryName?: string) => {
   const noteRef = firebaseDb.collection(TABLE_NOTES)
-  let categoryRefName
-  if (!categoryName) {
+  const categoryName = await setNotePrepare(note, argCategoryName)
+  noteRef &&
+    noteRef
+      .doc(`${categoryName}-${pascalize(note.title)}`)
+      .set(note, { mergeFields: [] })
+      .catch(e => console.log(e))
+}
+export const setNote = async (note: any, argCategoryName?: string) => {
+  const noteRef = firebaseDb.collection(TABLE_NOTES)
+  const categoryName = await setNotePrepare(note, argCategoryName)
+  noteRef &&
+    noteRef
+      .doc(`${categoryName}-${pascalize(note.title)}`)
+      .set(note)
+      .catch(e => console.log(e))
+}
+const setNotePrepare = async (note: any, argCategoryName?: string) => {
+  let categoryName = argCategoryName
+  if (!argCategoryName) {
     const categoryRef = firebaseDb.collection(TABLE_CATEGORIES)
     const catData = await categoryRef
       .where('id', '==', note.categoryId)
       .get()
       .then(ss => ss.docs.map(e => e.data()))
-    categoryRefName = catData.find(e => e)?.label.toString()
+    categoryName = catData.find(e => e)?.label.toString()
   }
-  noteRef
-    .doc(`${categoryName || categoryRefName}-${pascalize(note.title)}`)
-    .set(note)
+  return categoryName
+}
+// #endregion
+
+// #region auth
+// https://firebase.google.com/docs/auth/web/start
+// https://firebase.google.com/docs/auth/web/manage-users?hl=ja
+export const register = async (userName: string, email: string, password: string) => {
+  if (await existsUserName(userName)) {
+    return
+  }
+  if (firebaseAuth.currentUser) {
+    await logout()
+  }
+  await firebaseAuth
+    .createUserWithEmailAndPassword(email, password)
+    .then(() => {
+      console.log('registered')
+    })
+    .catch(error => {
+      console.log(error.code, error.message)
+    })
+
+  const user = await login(email, password)
+  if (user !== null) {
+    await updateUserInfo(user, userName)
+  }
+  return user
+}
+export const login = async (email: string, password: string) => {
+  if (firebaseAuth.currentUser) {
+    await logout()
+  }
+  await firebaseAuth
+    .signInWithEmailAndPassword(email, password)
+    .then(() => {
+      console.log('logined', firebaseAuth.currentUser)
+    })
+    .catch(error => {
+      console.log(error.code, error.message)
+    })
+  return firebaseAuth.currentUser
+}
+export const logout = async () => {
+  firebaseAuth
+    .signOut()
+    .then(() => {
+      console.log('log out')
+    })
+    .catch(error => {
+      console.log(error.code, error.message)
+    })
+}
+export const updateUserInfo = async (user: firebase.User, userName: string) => {
+  // TODO: トランザクションの考慮(チェック処理もここにいれるところから)
+  // むしろ、admin権限作って、一元管理にすること
+  // firestore
+  const userInfoRef = firebaseDb.collection('userInfo')
+  userInfoRef
+    .doc(user.uid)
+    .set({ displayName: userName })
+    .then(() => {
+      // authentication
+      user
+        .updateProfile({
+          displayName: userName,
+        })
+        .catch(error => {
+          console.log(error.code, error.message)
+        })
+    })
     .catch(e => console.log(e))
+  return user
+}
+export const existsUserName = async (userName: string) => {
+  const userInfoRef = firebaseDb.collection('userInfo')
+  const result = await userInfoRef
+    .where('displayName', '==', userName)
+    .get()
+    .then(ss => ss.docs.map(e => e.data()))
+  if (result.length !== 0) {
+    return true
+  }
+  return false
 }
 // #endregion

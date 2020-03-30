@@ -9,9 +9,9 @@ import NoteItem from './components/NoteItem'
 import { openModal } from '../../reducers/modal'
 import { saveToStore } from '../../utils/createVariantReducer'
 import { Link } from 'react-router-dom'
-import SetCategoryModal from './components/SetCategoryModal'
+import SetCategoryModal from './containers/SetCategoryModal'
 import OperationMenu from '../../components/OperationMenu'
-import SetNoteModal from './components/SetNoteModal'
+import SetNoteModal from './containers/SetNoteModal'
 
 type Props = {
   selectedData: {

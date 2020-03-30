@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom'
 import _ from 'lodash'
 import ReactDataSheet from 'react-datasheet'
 import 'react-datasheet/lib/react-datasheet.css'
-import SetCodepenModal from './components/SetCodepenModal'
+import SetCodepenModal from './containers/SetCodepenModal'
 import OperationMenu from '../../components/OperationMenu'
 import Tabs from '../../components/Tabs'
 import EmbeddedCodepen from './components/EmbeddedCodepen'
@@ -128,8 +128,7 @@ class NotePage extends Component<Props> {
     }
     this.props.saveToStore('selectedData', 'note', {
       ...note,
-      title: 'new',
-      content: 'please input',
+      content: 'please input markdown memo',
     })
   }
   private memoExportButtonClick = () => {

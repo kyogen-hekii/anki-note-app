@@ -6,8 +6,8 @@ import { ConnectedRouter } from 'connected-react-router'
 import configureStore, { history } from './store'
 
 import DummyPage from './dev/DummyPage'
-import PageHeader from './pages/Components/Header'
-import PageFooter from './pages/Components/Footer'
+import PageHeader from './pages/Common/components/Header'
+import PageFooter from './pages/Common/components/Footer'
 import HomePage from './pages/Home/HomePage'
 import NotePage from './pages/Note/NotePage'
 import AnkiPage from './pages/Anki/AnkiPage'
@@ -23,7 +23,7 @@ function App() {
         style={{
           backgroundColor: '#F5F5F5',
           paddingBottom: 20,
-          height: '95vh',
+          minHeight: '95vh',
           overflowY: 'scroll',
         }}
       >

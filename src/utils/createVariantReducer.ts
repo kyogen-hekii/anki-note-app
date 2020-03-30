@@ -15,17 +15,23 @@ export default (target: string) => {
         const { key, value } = action.payload
         return { ...state, [key]: value }
       }
+      case 'CLEAR_STORE': {
+        return {}
+      }
     }
     return state
   }
 }
 
 // action creator
-export const saveToStore = (target: string, key: string, value: any, setData?: Function) => {
+export const saveToStore = (target: string, key: string, value: any, setDataToDb?: Function) => {
   try {
-    setData && setData(value)
+    setDataToDb && setDataToDb(value)
   } catch (error) {
     console.error(error)
   }
   return { type: 'SAVE_TO_STORE', target, payload: { key, value } }
+}
+export const clearStore = (target: string) => {
+  return { type: 'CLEAR_STORE', target }
 }

@@ -9,6 +9,7 @@ const createRootReducer = (history: History) =>
     router: connectRouter(history),
     page: createVariantReducer('page'),
     selectedData: createVariantReducer('selectedData'),
+    auth: createVariantReducer('auth'),
     modal,
   })
 
