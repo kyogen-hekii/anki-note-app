@@ -70,7 +70,7 @@ export const getNote = async (noteId: number) => {
  */
 export const createNote = async (note: any, argCategoryName?: string) => {
   const noteRef = firebaseDb.collection(TABLE_NOTES)
-  const docName = await prepareSetNote(note, argCategoryName)
+  const docName = await getNoteDocName(note, argCategoryName)
 
   const exists = await noteRef
     .doc(docName)
@@ -87,14 +87,23 @@ export const createNote = async (note: any, argCategoryName?: string) => {
 }
 export const setNote = async (note: any, argCategoryName?: string) => {
   const noteRef = firebaseDb.collection(TABLE_NOTES)
-  const docName = await prepareSetNote(note, argCategoryName)
+  const docName = await getNoteDocName(note, argCategoryName)
   noteRef &&
     noteRef
       .doc(docName)
       .set(note)
       .catch(e => console.log(e))
 }
-const prepareSetNote = async (note: any, argCategoryName?: string) => {
+export const deleteNote = async (note: any, argCategoryName?: string) => {
+  const noteRef = firebaseDb.collection(TABLE_NOTES)
+  const docName = await getNoteDocName(note, argCategoryName)
+  noteRef &&
+    noteRef
+      .doc(docName)
+      .delete()
+      .catch(e => console.log(e))
+}
+const getNoteDocName = async (note: any, argCategoryName?: string) => {
   let categoryName = argCategoryName
   if (!argCategoryName) {
     const categoryRef = firebaseDb.collection(TABLE_CATEGORIES)

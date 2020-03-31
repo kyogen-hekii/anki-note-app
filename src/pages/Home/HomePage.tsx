@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 
 import SimpleFetch from '../../api/SimpleFetch'
-import { getUser, getCategories, getNotes } from '../../api/queries'
+import { getUser, getCategories, getNotes, deleteNote } from '../../api/queries'
 import NoteItem from './components/NoteItem'
 import { openModal } from '../../reducers/modal'
 import { saveToStore } from '../../utils/createVariantReducer'
@@ -14,6 +14,7 @@ import OperationMenu from '../../components/OperationMenu'
 import SetNoteModal from './containers/SetNoteModal'
 
 type Props = {
+  auth: any
   selectedData: {
     category: any
     note: any
@@ -66,6 +67,11 @@ class HomePage extends Component<Props> {
   handleClickNote = (selectedNote: any) => {
     this.props.saveToStore('selectedData', 'note', selectedNote)
   }
+  handleClickDelete = async (selectedNote: any) => {
+    const { category } = this.props.selectedData
+    await deleteNote(selectedNote, category.label)
+    await this.initNotes()
+  }
   // #endregion
 
   // #region private method
@@ -86,8 +92,12 @@ class HomePage extends Component<Props> {
 
   // #region render
   render() {
-    const { category } = this.props.selectedData
-    const { categoryOptions, notes } = this.props.page
+    const {
+      selectedData: { category },
+      page: { categoryOptions, notes },
+      auth: { user },
+    } = this.props
+
     return (
       <div>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -115,9 +125,14 @@ class HomePage extends Component<Props> {
             .filter((n: any) => n.categoryId === category.id)
             .map((n: any) => {
               return (
-                <div key={n.id}>
+                <div key={n.id} style={{ marginRight: '4rem' }}>
                   <Link to="/note">
-                    <NoteItem note={n} onClick={this.handleClickNote} />
+                    <NoteItem
+                      note={n}
+                      onClick={this.handleClickNote}
+                      onDeleteClick={this.handleClickDelete}
+                      disableDelete={!_.isEmpty(n?.author) && n?.author !== user?.displayName}
+                    />
                   </Link>
                 </div>
               )
@@ -130,6 +145,7 @@ class HomePage extends Component<Props> {
 
 // extends Component<Props>
 const mapStateToProps = (state: any) => ({
+  auth: state.auth,
   selectedData: state.selectedData,
   page: state.page,
 })

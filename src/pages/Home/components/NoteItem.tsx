@@ -2,7 +2,13 @@ import React from 'react'
 import removeMarkdown from 'remove-markdown'
 import { TransformScaleDivButton } from '../../../components/TransformScaleButton'
 
-export default ({ note, onClick }: any) => {
+type Props = {
+  note: any
+  onClick: Function
+  onDeleteClick: Function
+  disableDelete?: boolean
+}
+export default ({ note, onClick, onDeleteClick, disableDelete }: Props) => {
   return (
     <div
       className="mb20"
@@ -10,7 +16,6 @@ export default ({ note, onClick }: any) => {
         backgroundColor: 'white',
         borderLeft: 'solid 6px #79BD9A',
         borderBottom: 'solid 2px #dadada',
-        marginRight: '4rem',
       }}
       onClick={() => onClick(note)}
     >
@@ -24,9 +29,14 @@ export default ({ note, onClick }: any) => {
         <TransformScaleDivButton
           className="mr10"
           style={{ display: 'flex' }}
-          onClick={e => {
+          isInvalid={disableDelete}
+          onClick={(e: any) => {
             e.preventDefault()
             e.stopPropagation()
+            if (disableDelete) {
+              return
+            }
+            onDeleteClick(note)
           }}
         >
           <i className="fa fa-trash" />

@@ -6,11 +6,13 @@ import { login } from '../../../api/queries'
 import SetSignupModal from './SetSignupModal'
 
 type Props = {
+  history: any
   auth: any
   saveToStore: Function
   clearStore: Function
   closeModal: Function
   openModal: Function
+  callBack: Function
 }
 class SetModal extends Component<Props> {
   state: any = {
@@ -24,6 +26,8 @@ class SetModal extends Component<Props> {
     if (user) {
       this.props.saveToStore('auth', 'user', user)
       this.props.closeModal()
+      const { callBack }: any = this.props
+      callBack && callBack()
     }
   }
   handleSignupClick = async (e: any) => {

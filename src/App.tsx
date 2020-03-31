@@ -27,8 +27,8 @@ function App() {
           overflowY: 'scroll',
         }}
       >
-        <PageHeader />
         <ConnectedRouter history={history}>
+          <PageHeader />
           <Switch>
             <Route exact path="/login" component={DummyPage} />
           </Switch>

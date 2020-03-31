@@ -7,9 +7,11 @@ import { existsUserName, updateUserInfo, logout } from '../../../api/queries'
 
 type Props = {
   auth: any
+  history: any
   saveToStore: Function
   clearStore: Function
   closeModal: Function
+  callBack: Function
 }
 class SetModal extends Component<Props> {
   state: any = {
@@ -37,6 +39,8 @@ class SetModal extends Component<Props> {
     logout()
     this.props.clearStore('auth')
     this.props.closeModal()
+    const { callBack }: any = this.props
+    callBack && callBack()
   }
   handleuserNameChange = (e: any) => {
     e.preventDefault()

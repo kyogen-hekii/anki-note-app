@@ -16,6 +16,7 @@ import EmbeddedCodepen from './components/EmbeddedCodepen'
 
 type Props = {
   history: any
+  auth: any
   page: any
   selectedData: any
   openModal: Function
@@ -25,17 +26,12 @@ class NotePage extends Component<Props> {
   // #region state
   // TODO: local stateをglobal stateに昇格
   state: any = {
-    user: {},
     currentTab: 'memo',
     isInputViewShown: true,
     isChanged: false,
     hideMode: false,
   }
-  allClickable: any = {
-    plus: true,
-    export: true,
-    change: true,
-  }
+
   operationMenuObj: any = {
     memo: {
       onPlusButtonClick: () => {
@@ -47,7 +43,11 @@ class NotePage extends Component<Props> {
       onChangeButtonClick: () => {
         this.memoChangeButtonClick()
       },
-      isAble: this.allClickable,
+      isAble: {
+        plus: this.isEditable(),
+        export: true,
+        change: true,
+      },
     },
     vocabulary: {
       onPlusButtonClick: () => {
@@ -59,7 +59,11 @@ class NotePage extends Component<Props> {
       onChangeButtonClick: () => {
         this.vocabularyChangeButtonClick()
       },
-      isAble: this.allClickable,
+      isAble: {
+        plus: this.isEditable(),
+        export: true,
+        change: true,
+      },
     },
     codepen: {
       onPlusButtonClick: () => {
@@ -71,7 +75,11 @@ class NotePage extends Component<Props> {
       onChangeButtonClick: () => {
         this.codepenChangeButtonClick()
       },
-      isAble: this.allClickable,
+      isAble: {
+        plus: this.isEditable(),
+        export: true,
+        change: this.isEditable(),
+      },
     },
   }
   // #endregion
@@ -321,6 +329,14 @@ class NotePage extends Component<Props> {
     ].join(':')
     downLoadLink.click()
   }
+  private isEditable() {
+    const {
+      auth: { user },
+      selectedData: { note },
+    } = this.props
+    return _.isEmpty(note?.author) || note?.author === user?.displayName
+  }
+
   // #endregion
 
   // #region render
@@ -409,6 +425,7 @@ class NotePage extends Component<Props> {
 }
 
 const mapStateToProps = (state: any) => ({
+  auth: state.auth,
   page: state.page,
   selectedData: state.selectedData,
 })

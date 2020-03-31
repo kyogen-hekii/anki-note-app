@@ -13,6 +13,11 @@ export const TransformScaleButton = styled.button<{ isInvalid?: boolean }>`
 `
 
 export const TransformScaleDivButton = styled(TransformScaleButton.withComponent('div'))`
-  cursor: pointer;
-  user-select: none;
+  cursor: auto;
+  ${({ isInvalid }) =>
+    !isInvalid &&
+    css`
+      cursor: pointer;
+      user-select: none;
+    `}
 `

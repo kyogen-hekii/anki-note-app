@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import SiteLogo from '../../../assets/svg/logo.svg'
 import { openModal } from '../../../reducers/modal'
 import SetLoginModal from '../containers/SetLoginModal'
@@ -8,11 +9,12 @@ import SetProfileModal from '../containers/SetProfileModal'
 import _ from 'lodash'
 
 type Props = {
+  history: any
   auth: any
   selectedData: any
   openModal: Function
 }
-const PageHeader = ({ auth, selectedData, openModal }: Props) => {
+const PageHeader = ({ history, auth, selectedData, openModal }: Props) => {
   const { category, note } = selectedData
   return (
     <>
@@ -30,9 +32,13 @@ const PageHeader = ({ auth, selectedData, openModal }: Props) => {
             className="touchable"
             onClick={() => {
               if (_.isEmpty(auth)) {
-                openModal(SetLoginModal)
+                openModal(SetLoginModal, {}, () => {
+                  history.push('/home')
+                })
               } else {
-                openModal(SetProfileModal)
+                openModal(SetProfileModal, {}, () => {
+                  history.push('/home')
+                })
               }
             }}
           >
@@ -52,4 +58,4 @@ const mapStateToProps = (state: any) => ({
 const mapDispatchToProps = {
   openModal,
 }
-export default connect(mapStateToProps, mapDispatchToProps)(PageHeader)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PageHeader))
