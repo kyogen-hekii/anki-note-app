@@ -1,21 +1,25 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+import _ from 'lodash'
 import SiteLogo from '../../../assets/svg/logo.svg'
 import { openModal } from '../../../reducers/modal'
+import { saveToStore } from '../../../utils/createVariantReducer'
 import SetLoginModal from '../containers/SetLoginModal'
-import UserIcon from '../../../components/UserIcon'
 import SetProfileModal from '../containers/SetProfileModal'
-import _ from 'lodash'
+import UserIcon from '../../../components/UserIcon'
+import ToggleButton from '../../../components/ToggleButton'
 
 type Props = {
   history: any
   auth: any
   selectedData: any
   openModal: Function
+  saveToStore: Function
 }
-const PageHeader = ({ history, auth, selectedData, openModal }: Props) => {
-  const { category, note } = selectedData
+const PageHeader = ({ history, auth, selectedData, openModal, saveToStore }: Props) => {
+  const { user } = auth
+  const { category, note, isPrivate } = selectedData
   return (
     <>
       <div style={{ display: 'flex', backgroundColor: '#A8DBA8', justifyContent: 'space-between' }}>
@@ -28,6 +32,14 @@ const PageHeader = ({ history, auth, selectedData, openModal }: Props) => {
           </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center' }}>
+          <ToggleButton
+            isPrivate={isPrivate}
+            onClick={() => {
+              history.location.pathname === '/home' &&
+                user &&
+                saveToStore('selectedData', 'isPrivate', !isPrivate)
+            }}
+          />
           <span
             className="touchable"
             onClick={() => {
@@ -57,5 +69,6 @@ const mapStateToProps = (state: any) => ({
 })
 const mapDispatchToProps = {
   openModal,
+  saveToStore,
 }
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PageHeader))

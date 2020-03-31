@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 
 import SimpleFetch from '../../api/SimpleFetch'
-import { getUser, getCategories, getNotes, deleteNote } from '../../api/queries'
+import { getCategories, getNotes, deleteNote } from '../../api/queries'
 import NoteItem from './components/NoteItem'
 import { openModal } from '../../reducers/modal'
 import { saveToStore } from '../../utils/createVariantReducer'
@@ -18,6 +18,7 @@ type Props = {
   selectedData: {
     category: any
     note: any
+    isPrivate: boolean
   }
   page: any
   saveToStore: Function
@@ -25,9 +26,6 @@ type Props = {
 }
 class HomePage extends Component<Props> {
   // #region state
-  state: any = {
-    user: {},
-  }
   operationMenuObj: any = {
     onPlusButtonClick: () => {
       const { category } = this.props.selectedData
@@ -46,11 +44,7 @@ class HomePage extends Component<Props> {
   CREATE_ID: number = 999
   // #region componentDidMount
   async componentDidMount() {
-    const user = await SimpleFetch(getUser(1))
-    this.setState({ user })
-
     await this.initCategoryOptions()
-
     await this.initNotes()
   }
   // #endregion
@@ -93,7 +87,7 @@ class HomePage extends Component<Props> {
   // #region render
   render() {
     const {
-      selectedData: { category },
+      selectedData: { category, isPrivate },
       page: { categoryOptions, notes },
       auth: { user },
     } = this.props
@@ -122,6 +116,7 @@ class HomePage extends Component<Props> {
         <OperationMenu obj={this.operationMenuObj} />
         {!_.isEmpty(category) &&
           notes
+            .filter((n: any) => !isPrivate || n.author === user?.displayName)
             .filter((n: any) => n.categoryId === category.id)
             .map((n: any) => {
               return (
@@ -143,7 +138,6 @@ class HomePage extends Component<Props> {
   // #endregion
 }
 
-// extends Component<Props>
 const mapStateToProps = (state: any) => ({
   auth: state.auth,
   selectedData: state.selectedData,

@@ -1,9 +1,8 @@
-const initialState: any = {}
 /**
  * targetを受け取り、action.targetをもつ、reducerを生成
  * e.g.) target: 'user'
  */
-export default (target: string) => {
+export default (target: string, initialState: any = {}) => {
   // actionにtargetを生やして、targetName: {keyName1: valueName1...}とする
   return (state = initialState, action: any) => {
     if (target !== action.target) {

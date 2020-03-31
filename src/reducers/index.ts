@@ -8,7 +8,7 @@ const createRootReducer = (history: History) =>
   combineReducers({
     router: connectRouter(history),
     page: createVariantReducer('page'),
-    selectedData: createVariantReducer('selectedData'),
+    selectedData: createVariantReducer('selectedData', { isPrivate: false }),
     auth: createVariantReducer('auth'),
     modal,
   })
