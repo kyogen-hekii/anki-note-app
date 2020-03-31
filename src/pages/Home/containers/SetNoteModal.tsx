@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 import { closeModal } from '../../../reducers/modal'
 import { saveToStore } from '../../../utils/createVariantReducer'
-import { setNote, getNotes } from '../../../api/queries'
+import { getNotes, createNote } from '../../../api/queries'
 
 type Props = {
   id: number
@@ -21,7 +21,9 @@ class SetModal extends Component<Props> {
   handleClick = async (e: any) => {
     e.preventDefault()
     const { noteName } = this.state
-    const { auth } = this.state
+    const {
+      auth: { user },
+    } = this.props
     if (_.isEmpty(noteName)) {
       this.props.closeModal()
       return
@@ -31,15 +33,15 @@ class SetModal extends Component<Props> {
       id: maxId + 1,
       categoryId: this.props.selectedData.category.id,
       title: noteName,
-      author: '',
-      content: auth?.displayName ? auth.diplayName : '',
+      authorUid: user?.uid || '',
+      author: user?.displayName || '',
+      content: '',
       codepenUrl: '',
     }
-    this.props.saveToStore('selectedData', 'note', newNote, setNote)
-
+    this.props.saveToStore('selectedData', 'note', newNote)
+    await createNote(newNote)
     const { callBack }: any = this.props
-    console.log('callBack:', callBack)
-    callBack && (await callBack())
+    callBack && callBack()
     this.props.closeModal()
   }
   handlenoteNameChange = (e: any) => {

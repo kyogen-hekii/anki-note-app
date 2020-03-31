@@ -37,9 +37,16 @@ export const getCategories = async () => {
  */
 export const createCategory = async (category: any) => {
   const categoryRef = firebaseDb.collection(TABLE_CATEGORIES)
+  const exists = await categoryRef
+    .doc(category.label)
+    .get()
+    .then((doc: any) => doc.exists)
+  if (exists) {
+    return
+  }
   categoryRef
     .doc(category.label)
-    .set(category, { mergeFields: [] })
+    .set(category)
     .catch(e => console.log(e))
 }
 // #endregion
@@ -63,23 +70,31 @@ export const getNote = async (noteId: number) => {
  */
 export const createNote = async (note: any, argCategoryName?: string) => {
   const noteRef = firebaseDb.collection(TABLE_NOTES)
-  const categoryName = await setNotePrepare(note, argCategoryName)
+  const docName = await prepareSetNote(note, argCategoryName)
+
+  const exists = await noteRef
+    .doc(docName)
+    .get()
+    .then((doc: any) => doc.exists)
+  if (exists) {
+    return
+  }
   noteRef &&
     noteRef
-      .doc(`${categoryName}-${pascalize(note.title)}`)
-      .set(note, { mergeFields: [] })
+      .doc(docName)
+      .set(note)
       .catch(e => console.log(e))
 }
 export const setNote = async (note: any, argCategoryName?: string) => {
   const noteRef = firebaseDb.collection(TABLE_NOTES)
-  const categoryName = await setNotePrepare(note, argCategoryName)
+  const docName = await prepareSetNote(note, argCategoryName)
   noteRef &&
     noteRef
-      .doc(`${categoryName}-${pascalize(note.title)}`)
+      .doc(docName)
       .set(note)
       .catch(e => console.log(e))
 }
-const setNotePrepare = async (note: any, argCategoryName?: string) => {
+const prepareSetNote = async (note: any, argCategoryName?: string) => {
   let categoryName = argCategoryName
   if (!argCategoryName) {
     const categoryRef = firebaseDb.collection(TABLE_CATEGORIES)
@@ -89,7 +104,9 @@ const setNotePrepare = async (note: any, argCategoryName?: string) => {
       .then(ss => ss.docs.map(e => e.data()))
     categoryName = catData.find(e => e)?.label.toString()
   }
-  return categoryName
+  const authorName = note?.author || ''
+  const docName = `${categoryName}-${pascalize(note.title)}${authorName ? '@' : ''}${authorName}`
+  return docName
 }
 // #endregion
 

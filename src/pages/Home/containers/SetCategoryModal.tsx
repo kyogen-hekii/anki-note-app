@@ -30,10 +30,11 @@ class SetModal extends Component<Props> {
       value: camelize(categoryName),
       label: pascalize(categoryName),
     }
-    this.props.saveToStore('selectedData', 'category', newCategory, createCategory)
+    this.props.saveToStore('selectedData', 'category', newCategory)
+    await createCategory(newCategory)
 
     const { callBack }: any = this.props
-    callBack && (await callBack())
+    callBack && callBack()
     this.props.closeModal()
   }
   handleCategoryChange = (e: any) => {

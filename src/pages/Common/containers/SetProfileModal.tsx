@@ -51,7 +51,7 @@ class SetModal extends Component<Props> {
     return (
       <div className={`align-center`}>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <label htmlFor="userName">ユーザ名</label>
+          <label htmlFor="userName">ユーザ名(変更不可)</label>
           <input
             id="userName"
             type="text"
@@ -59,11 +59,11 @@ class SetModal extends Component<Props> {
             placeholder="handle name"
             onChange={this.handleuserNameChange}
             autoFocus
-            required
+            readOnly
           />
-          <button type="button" className="mb20" onClick={this.handleChangeClick}>
+          {/* <button type="button" className="mb20" onClick={this.handleChangeClick}>
             変更
-          </button>
+          </button> */}
           <span className="touchable" style={{ color: 'blue' }} onClick={this.handleLogoutClick}>
             ログアウト
           </span>

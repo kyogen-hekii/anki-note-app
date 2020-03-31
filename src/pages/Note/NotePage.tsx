@@ -151,7 +151,7 @@ class NotePage extends Component<Props> {
     const { note } = this.props.selectedData
     const { vocabulary } = note
     if (!vocabulary) {
-      await this.props.saveToStore('selectedData', 'note', { ...note, vocabulary: [] })
+      this.props.saveToStore('selectedData', 'note', { ...note, vocabulary: [] })
     }
     this.addVocabularyRows({ isFirst: false })
   }
