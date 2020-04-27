@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import _ from 'lodash'
 import 'react-datasheet/lib/react-datasheet.css'
 import Tabs from '../../components/Tabs'
+import TextZone from '../../components/TextZone'
 
 type Props = {
   history: any
@@ -19,21 +20,14 @@ class AnkiPage extends Component<Props> {
   // #region state
   // TODO: local stateをglobal stateに昇格
   state: any = {
-    // whoseDeckTab
-    // whichDeck
-    currentTab: 'NoteDeck',
+    currentTab: 'SELECTED NOTE',
   }
-  tabs: any = ['NoteDeck', 'CategoryDeck']
+  deckTabs: any = ['SELECTED NOTE', 'ALL NOTE']
   // #endregion
 
-  // #region componentDidMount
-  componentDidMount() {}
-  // #endregion
-
-  // #region render
+ // #region render
   render() {
-    const { category, note } = this.props.selectedData
-    const { categoryId, noteId } = this.props.match.params
+    const { category, note, isPrivate } = this.props.selectedData
     const { currentTab } = this.state
 
     if (_.isEmpty(category) || _.isEmpty(note)) {
@@ -44,17 +38,24 @@ class AnkiPage extends Component<Props> {
       )
     }
 
-    const ankiLink =
-      currentTab === 'NoteDeck' ? `/anki/${category.id}/${note.id}` : `/anki/${category.id}/all`
+    const ankiLink = isPrivate
+      ? currentTab === 'SELECTED NOTE'
+        ? `/anki/${category.id}/${note.id}/private`
+        : `/anki/${category.id}/all/private`
+      : currentTab === 'SELECTED NOTE'
+      ? `/anki/${category.id}/${note.id}`
+      : `/anki/${category.id}/all`
     return (
       <>
         <Tabs
-          tabs={this.tabs}
+          tabs={this.deckTabs}
           currentTab={currentTab}
           changeTab={(tab: string) => this.setState({ currentTab: tab })}
         />
-        <div style={{ display: 'flex' }}>
-          <Link to={ankiLink}>start</Link>
+        <div className="mb20" style={{ display: 'flex', justifyContent: 'center' }}>
+          <Link to={ankiLink}>
+            <TextZone text="start" />
+          </Link>
         </div>
       </>
     )

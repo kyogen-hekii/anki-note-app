@@ -16,10 +16,6 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
-}
-
 /* m */
 .mr5 {
   margin-right: 5px;
@@ -89,15 +85,33 @@ textarea {
   font-family: 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro W3', 'メイリオ', Meiryo, 'ＭＳ Ｐゴシック', sans-serif;
 }
 
+.textfont {
+  font-family: 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro W3', 'メイリオ', Meiryo, 'ＭＳ Ｐゴシック', sans-serif;
+}
+
 .touchable {
   cursor: pointer;
   user-select: none;
 }
 
-.left {
+/* grid */
+.limit {
+  max-width: calc(((100vw - 40px) - 4rem) / 2);
+}
+
+.right {
   color: white;
 }
 
-.left.selected {
+.right.selected {
   color: black;
+}
+
+.right.read-only {
+  color: whitesmoke !important;
+}
+
+.right.read-only.selected {
+  color: black !important;
+  background-color: red !important;
 }

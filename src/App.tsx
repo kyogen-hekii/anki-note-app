@@ -13,6 +13,9 @@ import NotePage from './pages/Note/NotePage'
 import AnkiPage from './pages/Anki/AnkiPage'
 import AnkiGamePage from './pages/Anki/AnkiGamePage'
 import Modal from './containers/Modal'
+import Toast from './containers/Toast'
+import Error from './containers/Error'
+import AnkiPrivateGamePage from './pages/Anki/AnkiPrivateGamePage'
 
 const store = configureStore()
 
@@ -24,7 +27,6 @@ function App() {
           backgroundColor: '#F5F5F5',
           paddingBottom: 20,
           minHeight: '95vh',
-          overflowY: 'scroll',
         }}
       >
         <ConnectedRouter history={history}>
@@ -45,6 +47,7 @@ function App() {
             <Route exact path="/note" component={NotePage} />
           </Switch>
           <Switch>
+            <Route exact path="/anki/:categoryId/:noteId/private" component={AnkiPrivateGamePage} />
             <Route exact path="/anki/:categoryId/:noteId" component={AnkiGamePage} />
             <Route exact path="/anki" component={AnkiPage} />
           </Switch>
@@ -53,6 +56,8 @@ function App() {
           </Switch>
           <PageFooter />
           <Modal />
+          <Toast />
+          <Error />
         </ConnectedRouter>
       </div>
     </Provider>

@@ -5,6 +5,7 @@ import _ from 'lodash'
 import { closeModal } from '../../../reducers/modal'
 import { saveToStore } from '../../../utils/createVariantReducer'
 import { createCategory, getCategories } from '../../../api/queries'
+import CommonButton from '../../../components/CommonButton'
 
 type Props = {
   id: number
@@ -24,7 +25,7 @@ class SetModal extends Component<Props> {
       this.props.closeModal()
       return
     }
-    const maxId = (await getCategories()).map(c => c.id).reduce((p, r) => Math.max(p, r))
+    const maxId = (await getCategories()).map((c) => c.id).reduce((p, r) => Math.max(p, r))
     const newCategory = {
       id: maxId + 1,
       value: camelize(categoryName),
@@ -48,18 +49,14 @@ class SetModal extends Component<Props> {
       <div className={`align-center`}>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <input
+            className="mb10"
             type="text"
             value={codepenUrl}
             placeholder="e.g.) React, Vue.js..."
             onChange={this.handleCategoryChange}
             autoFocus
           />
-          <button
-            // onClick={() => {dispatch(closeModal())}} ※事前に dispatch = useDispatch()
-            onClick={this.handleClick}
-          >
-            click me
-          </button>
+          <CommonButton className="mb10" onClick={this.handleClick} label="作成" />
         </div>
       </div>
     )

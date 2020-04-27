@@ -7,11 +7,13 @@ import SimpleFetch from '../../api/SimpleFetch'
 import { getCategories, getNotes, deleteNote } from '../../api/queries'
 import NoteItem from './components/NoteItem'
 import { openModal } from '../../reducers/modal'
+import { openToast } from '../../reducers/toast'
 import { saveToStore } from '../../utils/createVariantReducer'
 import { Link } from 'react-router-dom'
 import SetCategoryModal from './containers/SetCategoryModal'
 import OperationMenu from '../../components/OperationMenu'
 import SetNoteModal from './containers/SetNoteModal'
+import TextZone from '../../components/TextZone'
 
 type Props = {
   auth: any
@@ -23,6 +25,7 @@ type Props = {
   page: any
   saveToStore: Function
   openModal: Function
+  openToast: Function
 }
 class HomePage extends Component<Props> {
   // #region state
@@ -30,9 +33,10 @@ class HomePage extends Component<Props> {
     onPlusButtonClick: () => {
       const { category } = this.props.selectedData
       if (!category) {
+        this.props.openToast('カテゴリーを選択してください')
         return
       }
-      this.props.openModal(SetNoteModal, {}, this.initNotes)
+      this.props.openModal(SetNoteModal, { height: 100 }, this.initNotes)
     },
     isAble: {
       plus: true,
@@ -52,7 +56,7 @@ class HomePage extends Component<Props> {
   // #region handler
   handleClickCategory = (selectedCategory: any) => {
     if (selectedCategory.id === this.CREATE_ID) {
-      this.props.openModal(SetCategoryModal, {}, this.initCategoryOptions)
+      this.props.openModal(SetCategoryModal, { height: 100 }, this.initCategoryOptions)
       return
     }
     this.props.saveToStore('selectedData', 'category', selectedCategory)
@@ -93,28 +97,24 @@ class HomePage extends Component<Props> {
     } = this.props
 
     return (
-      <div>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <span style={{ flexGrow: 1 }}>
-            <Select
-              value={category}
-              onChange={this.handleClickCategory}
-              options={categoryOptions}
-              className="mb10"
-              styles={{
-                control: styles => ({
-                  ...styles,
-                  border: 0,
-                  backgroundColor: '#757575',
-                  height: '4rem',
-                }),
-                singleValue: styles => ({ ...styles, color: '#EFEFEF' }),
-              }}
-            />
-          </span>
-        </div>
+      <div style={{ marginBottom: '8rem' }}>
+        <Select
+          value={category}
+          onChange={this.handleClickCategory}
+          options={categoryOptions}
+          className="mb10"
+          styles={{
+            control: (styles) => ({
+              ...styles,
+              border: 0,
+              backgroundColor: '#757575',
+              height: '4rem',
+            }),
+            singleValue: (styles) => ({ ...styles, color: '#EFEFEF' }),
+          }}
+        />
         <OperationMenu obj={this.operationMenuObj} />
-        {!_.isEmpty(category) &&
+        {!_.isEmpty(category) && !_.isEmpty(notes) ? (
           notes
             .filter((n: any) => !isPrivate || n.author === user?.displayName)
             .filter((n: any) => n.categoryId === category.id)
@@ -131,7 +131,10 @@ class HomePage extends Component<Props> {
                   </Link>
                 </div>
               )
-            })}
+            })
+        ) : (
+          <TextZone text="カテゴリーを選んでください" />
+        )}
       </div>
     )
   }
@@ -146,5 +149,6 @@ const mapStateToProps = (state: any) => ({
 const mapDispatchToProps = {
   saveToStore,
   openModal,
+  openToast,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(HomePage)

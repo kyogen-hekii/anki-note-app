@@ -6,7 +6,7 @@ export const TransformScaleButton = styled.button<{ isInvalid?: boolean }>`
     css`
       transition-duration: 0.3s;
       &:hover {
-        transform: scale(1.2);
+        transform: scale(1.2) translate(-5px);
         transition-duration: 0.3s;
       }
     `}

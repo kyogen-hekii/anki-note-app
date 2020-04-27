@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom'
 import _ from 'lodash'
 import SiteLogo from '../../../assets/svg/logo.svg'
 import { openModal } from '../../../reducers/modal'
+import { openToast } from '../../../reducers/toast'
 import { saveToStore } from '../../../utils/createVariantReducer'
 import SetLoginModal from '../containers/SetLoginModal'
 import SetProfileModal from '../containers/SetProfileModal'
@@ -15,29 +16,59 @@ type Props = {
   auth: any
   selectedData: any
   openModal: Function
+  openToast: Function
   saveToStore: Function
 }
-const PageHeader = ({ history, auth, selectedData, openModal, saveToStore }: Props) => {
+
+const PageHeader = ({ history, auth, selectedData, openModal, openToast, saveToStore }: Props) => {
   const { user } = auth
   const { category, note, isPrivate } = selectedData
+
+  const goToHomePage = (clearNote: boolean) => {
+    //memo: selectedDataは入れ子にしてあるから/homeでないとクリアされない?
+    clearNote && saveToStore('selectedData', 'note', {})
+    history.push('/home')
+  }
+
   return (
     <>
       <div style={{ display: 'flex', backgroundColor: '#A8DBA8', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <img src={SiteLogo} alt="logo" width={50} height={50} />
+          <img
+            className="mr5 touchable"
+            onClick={() => goToHomePage(true)}
+            src={SiteLogo}
+            alt="logo"
+            width={50}
+            height={50}
+          />
           <span style={{ fontSize: '1.7rem', color: 'white' }}>
-            <span className="mr5">{category?.label}</span>
+            <span className="mr5 touchable" onClick={() => goToHomePage(true)}>
+              {category?.label}
+            </span>
             <span className="mr5">{note ? '>' : ''}</span>
-            <span>{note?.title}</span>
+            <span className="touchable" onClick={() => goToHomePage(false)}>
+              {note?.title}
+            </span>
+            {!(_.isEmpty(note?.author) || note?.author === user?.displayName) && (
+              <span>(read only)</span>
+            )}
           </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <ToggleButton
             isPrivate={isPrivate}
             onClick={() => {
-              history.location.pathname === '/home' &&
-                user &&
-                saveToStore('selectedData', 'isPrivate', !isPrivate)
+              if (!user) {
+                openToast('ログインして下さい')
+                return
+              }
+              if (history.location.pathname !== '/home') {
+                openToast('Homeで押して下さい')
+                return
+              }
+              saveToStore('selectedData', 'note', {})
+              saveToStore('selectedData', 'isPrivate', !isPrivate)
             }}
           />
           <span
@@ -69,6 +100,7 @@ const mapStateToProps = (state: any) => ({
 })
 const mapDispatchToProps = {
   openModal,
+  openToast,
   saveToStore,
 }
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PageHeader))

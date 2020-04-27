@@ -1,13 +1,16 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { closeModal } from '../../../reducers/modal'
+import { openToast } from '../../../reducers/toast'
 import { saveToStore } from '../../../utils/createVariantReducer'
 import { register } from '../../../api/queries'
+import CommonButton from '../../../components/CommonButton'
 
 type Props = {
   auth: any
   saveToStore: Function
   closeModal: Function
+  openToast: Function
 }
 class SetModal extends Component<Props> {
   state: any = {
@@ -23,6 +26,7 @@ class SetModal extends Component<Props> {
     if (user) {
       this.props.saveToStore('auth', 'user', user)
       this.props.closeModal()
+      this.props.openToast('新規作成しました')
     }
   }
   handleUserNameChange = (e: any) => {
@@ -40,8 +44,11 @@ class SetModal extends Component<Props> {
     return (
       <div className={`align-center`}>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <label htmlFor="userName">ユーザ名</label>
+          <label htmlFor="userName" style={{ display: 'flex', justifyContent: 'left' }}>
+            ユーザ名
+          </label>
           <input
+            className="mb10"
             id="userName"
             type="text"
             value={userName}
@@ -50,8 +57,11 @@ class SetModal extends Component<Props> {
             autoFocus
             required
           />
-          <label htmlFor="email">メールアドレス</label>
+          <label htmlFor="email" style={{ display: 'flex', justifyContent: 'left' }}>
+            メールアドレス
+          </label>
           <input
+            className="mb10"
             id="email"
             type="mailAddress"
             value={email}
@@ -59,8 +69,11 @@ class SetModal extends Component<Props> {
             onChange={this.handleEmailChange}
             required
           />
-          <label htmlFor="password">パスワード</label>
+          <label htmlFor="password" style={{ display: 'flex', justifyContent: 'left' }}>
+            パスワード
+          </label>
           <input
+            className="mb20"
             id="password"
             type="password"
             value={password}
@@ -68,7 +81,7 @@ class SetModal extends Component<Props> {
             onChange={this.handlePasswordChange}
             required
           />
-          <button onClick={this.handleClick}>新規登録</button>
+          <CommonButton className="mb20" onClick={this.handleClick} label="新規登録" />
         </div>
       </div>
     )
@@ -81,6 +94,7 @@ const mapStateToProps = (state: any) => ({
 const mapDispatchToProps = {
   saveToStore,
   closeModal,
+  openToast,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SetModal)

@@ -60,8 +60,9 @@ const PageFooter = ({ history, isExistsCategory }: Props) => (
       justifyContent: 'space-around',
     }}
   >
-    {pages.map(p =>
-      history.location.pathname === p.to ? (
+    {pages.map((p) =>
+      (p.to === '/home' && history.location.pathname.match('/$')) ||
+      history.location.pathname.match(p.to) ? (
         <div
           key={p.id}
           style={{
@@ -91,7 +92,7 @@ const PageFooter = ({ history, isExistsCategory }: Props) => (
           style={{
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center', //横を真ん中に
+            alignItems: 'center',
             justifyContent: 'center',
             width: '100vw',
             position: 'relative',
@@ -99,21 +100,13 @@ const PageFooter = ({ history, isExistsCategory }: Props) => (
         >
           <StyledLink to={p.to} canClick={p.clickable(isExistsCategory)} />
           <span>
-            <img
-              src={p.logo}
-              alt={p.id}
-              width={p.width}
-              height={p.height}
-              //style={{ display: 'block', margin: 'auto' }}
-            />
+            <img src={p.logo} alt={p.id} width={p.width} height={p.height} />
           </span>
           <span>{p.id}</span>
         </div>
       ),
     )}
-    {/* <button onClick={this.handleClickPopUser}>Callendar</button> */}
   </div>
-  // </div>
 )
 const mapStateToProps = (state: any) => ({
   selectedData: state.selectedData,

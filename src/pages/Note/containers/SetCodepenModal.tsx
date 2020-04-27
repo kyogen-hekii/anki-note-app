@@ -5,6 +5,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { closeModal } from '../../../reducers/modal'
 import { saveToStore } from '../../../utils/createVariantReducer'
 import { setNote } from '../../../api/queries'
+import CommonButton from '../../../components/CommonButton'
 
 type Props = {
   selectedData: any
@@ -58,19 +59,14 @@ class SetModal extends Component<Props> {
           </>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div>please input codepen's URL.</div>
             <input
+              className="mb10"
               type="text"
               value={codepenUrl}
               placeholder="e.g.) https://codepen.io/kyogen0/pen/BaavNYr"
               onChange={this.handleCodepenUrlChange}
             />
-            <button
-              // onClick={() => {dispatch(closeModal())}} ※事前に dispatch = useDispatch()
-              onClick={this.handleClick}
-            >
-              set codepen
-            </button>
+            <CommonButton className="mb10" onClick={this.handleClick} label="作成" />
           </div>
         )}
       </div>

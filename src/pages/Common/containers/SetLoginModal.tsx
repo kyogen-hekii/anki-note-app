@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { closeModal, openModal } from '../../../reducers/modal'
+import { openToast } from '../../../reducers/toast'
 import { saveToStore, clearStore } from '../../../utils/createVariantReducer'
 import { login } from '../../../api/queries'
 import SetSignupModal from './SetSignupModal'
+import CommonButton from '../../../components/CommonButton'
 
 type Props = {
   history: any
@@ -12,6 +14,7 @@ type Props = {
   clearStore: Function
   closeModal: Function
   openModal: Function
+  openToast: Function
   callBack: Function
 }
 class SetModal extends Component<Props> {
@@ -26,6 +29,7 @@ class SetModal extends Component<Props> {
     if (user) {
       this.props.saveToStore('auth', 'user', user)
       this.props.closeModal()
+      this.props.openToast('ログインしました')
       const { callBack }: any = this.props
       callBack && callBack()
     }
@@ -34,16 +38,14 @@ class SetModal extends Component<Props> {
     e.preventDefault()
     this.props.clearStore('auth')
     this.props.closeModal()
-    this.props.openModal(SetSignupModal)
+    this.props.openModal(SetSignupModal, {})
   }
   handleEmailChange = (e: any) => {
     e.preventDefault()
-    //const { email } = this.state
     this.setState({ email: e.target?.value })
   }
   handlePasswordChange = (e: any) => {
     e.preventDefault()
-    //const { password } = this.state
     this.setState({ password: e.target?.value })
   }
 
@@ -51,9 +53,12 @@ class SetModal extends Component<Props> {
     const { email, password } = this.state
     return (
       <div className={`align-center`}>
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <label htmlFor="email">メールアドレス</label>
+        <form style={{ display: 'flex', flexDirection: 'column' }}>
+          <label htmlFor="email" style={{ display: 'flex', justifyContent: 'left' }}>
+            メールアドレス
+          </label>
           <input
+            className="mb10"
             id="email"
             type="mailAddress"
             value={email}
@@ -62,8 +67,11 @@ class SetModal extends Component<Props> {
             autoFocus
             required
           />
-          <label htmlFor="password">パスワード</label>
+          <label htmlFor="password" style={{ display: 'flex', justifyContent: 'left' }}>
+            パスワード
+          </label>
           <input
+            className="mb20"
             id="password"
             type="password"
             value={password}
@@ -71,13 +79,11 @@ class SetModal extends Component<Props> {
             onChange={this.handlePasswordChange}
             required
           />
-          <button type="button" className="mb20" onClick={this.handleLoginClick}>
-            ログイン
-          </button>
-          <span className="touchable" style={{ color: 'blue' }} onClick={this.handleSignupClick}>
-            新規登録はこちら
-          </span>
-        </div>
+          <CommonButton className="mb20" onClick={this.handleLoginClick} label="ログイン" />
+        </form>
+        <span className="touchable" style={{ color: 'blue' }} onClick={this.handleSignupClick}>
+          新規登録はこちら
+        </span>
       </div>
     )
   }
@@ -91,6 +97,7 @@ const mapDispatchToProps = {
   clearStore,
   closeModal,
   openModal,
+  openToast,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SetModal)

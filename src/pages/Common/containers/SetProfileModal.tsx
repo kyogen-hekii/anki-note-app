@@ -54,9 +54,10 @@ class SetModal extends Component<Props> {
     const { userName } = this.state
     return (
       <div className={`align-center`}>
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <form style={{ display: 'flex', flexDirection: 'column' }}>
           <label htmlFor="userName">ユーザ名(変更不可)</label>
           <input
+            className="mb20"
             id="userName"
             type="text"
             value={userName}
@@ -68,10 +69,10 @@ class SetModal extends Component<Props> {
           {/* <button type="button" className="mb20" onClick={this.handleChangeClick}>
             変更
           </button> */}
-          <span className="touchable" style={{ color: 'blue' }} onClick={this.handleLogoutClick}>
-            ログアウト
-          </span>
-        </div>
+        </form>
+        <span className="touchable" style={{ color: 'blue' }} onClick={this.handleLogoutClick}>
+          ログアウト
+        </span>
       </div>
     )
   }

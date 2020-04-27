@@ -16,24 +16,21 @@ class Modal extends Component<Props> {
   }
 
   render() {
-    const {
-      isShow,
-      Modal,
-      props,
-      callBack,
-    }: {
+    type Modal = {
       isShow: boolean
       Modal: React.FC<{ props?: any; callBack?: Function }>
       props: any
       callBack: Function
-    } = this.props.modal
+    }
+    const { isShow, Modal, props, callBack }: Modal = this.props.modal
 
     if (!isShow) {
       return null
     }
-
+    const HEIGHT = props?.height || 300
     return (
       <div>
+        {/* 背景1(黒) */}
         <div
           style={{
             position: 'fixed',
@@ -44,7 +41,9 @@ class Modal extends Component<Props> {
             backgroundColor: 'black',
             opacity: 0.6,
           }}
+          onClick={() => this.props.closeModal()}
         />
+        {/* 背景2(白のためのスペース) */}
         <div
           style={{
             position: 'fixed',
@@ -59,18 +58,12 @@ class Modal extends Component<Props> {
             className="p20"
             style={{
               width: '60%',
-              height: 300,
+              height: HEIGHT,
               backgroundColor: 'white',
               borderRadius: 8,
             }}
           >
             <div className="m20">{Modal && <Modal props={props} callBack={callBack} />}</div>
-
-            <div className="align-center">
-              <button type="button" onClick={this.handleClose}>
-                close
-              </button>
-            </div>
           </div>
         </div>
       </div>

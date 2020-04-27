@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import Markdown from 'react-markdown'
-import SimpleFetch from '../../api/SimpleFetch'
-import { getUser, setNote } from '../../api/queries'
+import { setNote } from '../../api/queries'
 import { connect } from 'react-redux'
 import { openModal } from '../../reducers/modal'
+import { openToast } from '../../reducers/toast'
 import { saveToStore } from '../../utils/createVariantReducer'
 import { Link } from 'react-router-dom'
 import _ from 'lodash'
@@ -13,6 +13,9 @@ import SetCodepenModal from './containers/SetCodepenModal'
 import OperationMenu from '../../components/OperationMenu'
 import Tabs from '../../components/Tabs'
 import EmbeddedCodepen from './components/EmbeddedCodepen'
+import { parseVocabulary, serializeVocabulary } from '../Common/vocabulary'
+import SetExportModal from './containers/SetExportModal'
+import TextZone from '../../components/TextZone'
 
 type Props = {
   history: any
@@ -20,11 +23,11 @@ type Props = {
   page: any
   selectedData: any
   openModal: Function
+  openToast: Function
   saveToStore: Function
 }
 class NotePage extends Component<Props> {
   // #region state
-  // TODO: local stateをglobal stateに昇格
   state: any = {
     currentTab: 'memo',
     isInputViewShown: true,
@@ -38,7 +41,7 @@ class NotePage extends Component<Props> {
         this.memoPlusButtonClick()
       },
       onExportButtonClick: () => {
-        this.memoExportButtonClick()
+        this.props.openModal(SetExportModal, { height: 60 }, this.memoExportButtonClick)
       },
       onChangeButtonClick: () => {
         this.memoChangeButtonClick()
@@ -46,7 +49,7 @@ class NotePage extends Component<Props> {
       isAble: {
         plus: this.isEditable(),
         export: true,
-        change: true,
+        change: this.isEditable(),
       },
     },
     vocabulary: {
@@ -54,7 +57,7 @@ class NotePage extends Component<Props> {
         this.vocabularyPlusButtonClick()
       },
       onExportButtonClick: () => {
-        this.vocabularyExportButtonClick()
+        this.props.openModal(SetExportModal, { height: 60 }, this.vocabularyExportButtonClick)
       },
       onChangeButtonClick: () => {
         this.vocabularyChangeButtonClick()
@@ -71,6 +74,7 @@ class NotePage extends Component<Props> {
       },
       onExportButtonClick: () => {
         this.codepenExportButtonClick()
+        //this.props.openModal(SetExportModal, { height: 60 }, this.codepenExportButtonClick)
       },
       onChangeButtonClick: () => {
         this.codepenChangeButtonClick()
@@ -86,9 +90,10 @@ class NotePage extends Component<Props> {
 
   // #region componentDidMount
   componentDidMount() {
-    // const user = await SimpleFetch(getUser(1))
-    // this.setState({ user })
-    this.setState({ currentTab: Object.keys(this.operationMenuObj)[0] })
+    this.setState({
+      currentTab: Object.keys(this.operationMenuObj)[0],
+      isInputViewShown: this.isEditable(),
+    })
 
     const { note } = this.props.selectedData
     if (note && note.vocabulary) {
@@ -110,16 +115,11 @@ class NotePage extends Component<Props> {
   handleChangeVocabulary = (changes: ReactDataSheet.CellsChangedArgs<any, string>) => {
     const { note } = this.props.selectedData
     const { vocabulary }: { vocabulary: any[] } = note
-    const serializedVocabulary = this.serializeVocabulary(vocabulary)
-    changes.forEach(({ cell, row, col, value }) => {
-      serializedVocabulary[row][col] = { ...serializedVocabulary[row][col], value }
-    })
-    // const parsedVocabulary = this.parseVocabulary(serializedVocabulary)
-    // console.log('will saved: ', parsedVocabulary)
+    const serializedVocabulary = this.createSerializeVocabulary(vocabulary, changes)
     this.props.saveToStore(
       'selectedData',
       'note',
-      { ...note, vocabulary: this.parseVocabulary(serializedVocabulary) },
+      { ...note, vocabulary: parseVocabulary(note, serializedVocabulary) },
       setNote,
     )
   }
@@ -131,7 +131,7 @@ class NotePage extends Component<Props> {
   memoPlusButtonClick = () => {
     const { note } = this.props.selectedData
     if (!_.isEmpty(note?.content)) {
-      console.log('already exists')
+      this.props.openToast('すでに存在します')
       return
     }
     this.props.saveToStore('selectedData', 'note', {
@@ -169,7 +169,7 @@ class NotePage extends Component<Props> {
     const { vocabulary } = note
 
     if (!vocabulary) {
-      console.log('data is nothing')
+      this.props.openToast('データがありません')
       return
     }
 
@@ -190,6 +190,17 @@ class NotePage extends Component<Props> {
   // #endregion
 
   // #region vocabulary rows
+  private createSerializeVocabulary = (
+    vocabulary: any,
+    changes: ReactDataSheet.CellsChangedArgs<any, string>,
+  ) => {
+    const serializedVocabulary = serializeVocabulary(vocabulary, this.isEditable())
+    changes.forEach(({ cell, row, col, value }) => {
+      serializedVocabulary[row][col] = { ...serializedVocabulary[row][col], value }
+    })
+    return serializedVocabulary
+  }
+
   private deleteEmptyRows = async () => {
     const { note } = this.props.selectedData
     if (!note) {
@@ -237,9 +248,8 @@ class NotePage extends Component<Props> {
     if (!note) {
       return
     }
-
     const { vocabulary } = note
-    let vocabularyRows = vocabulary as any[]
+    let vocabularyRows = vocabulary || ([] as any[])
 
     const plusRowNum = (10 - (vocabularyRows.length % 10)) % 10
     vocabularyRows = vocabularyRows.concat(
@@ -257,61 +267,29 @@ class NotePage extends Component<Props> {
   private codepenUrlToHash = (codepenUrl: string) => {
     return codepenUrl.split('/').slice(-1)[0]
   }
-  /**
-   * DB保存時用のparse
-   */
-  private parseVocabulary = (vocabulary: any[]) => {
-    const arr = vocabulary
-      .filter((e, i) => i > 0)
-      .map((e: any[]) =>
-        // memo:[ [{value: leftvalue},{value: rightvalue}],...]このようなペアの状態で表示している(他propsは略)
-        e.reduce((left: any, right: any) => {
-          return { left: left.value, right: right.value }
-        }),
-      )
-    return arr
-  }
-  /**
-   * DBから取得した、storeのデータを表示用にserialize
-   */
-  private serializeVocabulary = (vocabulary: any[]) => {
-    if (!vocabulary) {
-      return []
-    }
-    const vocabularyHeader = [{ left: 'A', right: 'B' }]
-    let vocabularyRows = vocabulary as any[]
-    vocabularyRows = vocabularyHeader.concat(vocabularyRows)
-
-    return vocabularyRows.map((e: any, i: number) => {
-      return [
-        { value: e.left, width: 200, readOnly: i === 0, className: 'left' },
-        { value: e.right, width: 200, readOnly: i === 0, className: 'right' },
-      ]
-    })
-  }
   // #endregion
 
   // #region codepen
   private codepenPlusButtonClick = () => {
     const { note } = this.props.selectedData
     if (!_.isEmpty(note?.codepenUrl)) {
-      console.log('already exists')
+      this.props.openToast('すでに存在します')
       return
     }
-    this.props.openModal(SetCodepenModal)
+    this.props.openModal(SetCodepenModal, { height: 60 })
   }
   private codepenExportButtonClick = () => {
     const { note } = this.props.selectedData
     if (_.isEmpty(note?.codepenUrl)) {
-      console.log('no data')
+      this.props.openToast('追加してください')
       return
     }
-    this.props.openModal(SetCodepenModal, { isExport: true })
+    this.props.openModal(SetCodepenModal, { height: 60, isExport: true })
   }
   private codepenChangeButtonClick = () => {
     const { note } = this.props.selectedData
     if (_.isEmpty(note?.codepenUrl)) {
-      console.log('no data')
+      this.props.openToast('追加してください')
       return
     }
     this.props.openModal(SetCodepenModal, { isChange: true })
@@ -343,12 +321,14 @@ class NotePage extends Component<Props> {
   render() {
     const { category, note } = this.props.selectedData
     const { isInputViewShown, currentTab } = this.state
-    const serializedVocabulary = this.serializeVocabulary(note?.vocabulary)
+    const serializedVocabulary = serializeVocabulary(note?.vocabulary, this.isEditable())
 
     if (_.isEmpty(category) || _.isEmpty(note)) {
       return (
         <div>
-          Please select category and note at the <Link to="/home">HomePage</Link>
+          <Link to="/home">
+            <TextZone className="m20" text="お手数ですがHOMEから操作を開始してください" />
+          </Link>
         </div>
       )
     }
@@ -364,20 +344,47 @@ class NotePage extends Component<Props> {
 
         {currentTab === 'memo' && (
           <>
-            {_.isEmpty(note?.content) ? (
-              <div>please create note with right + button</div>
+            {!note?.content ? (
+              <TextZone className="m20" text="右の+でmemo作成" />
             ) : (
               <>
                 {isInputViewShown ? (
                   <textarea
-                    style={{ backgroundColor: '#FFF4E0' }}
+                    className="m20"
+                    style={{
+                      color: '#5d627b',
+                      background: 'white',
+                      borderTop: 'solid 5px #5d627b',
+                      boxShadow: '0 3px 5px rgba(0, 0, 0, 0.22)',
+                      minHeight: '65vh',
+                      maxWidth: 'calc(100vw - 40px - 4rem)',
+                      overflowY: 'auto',
+                      marginBottom: '8rem',
+                      marginRight: '4rem',
+                    }}
+                    readOnly={false}
                     cols={30}
                     rows={10}
                     onChange={this.handleChangeMemo}
                     value={note?.content}
                   />
                 ) : (
-                  <Markdown source={note.content} />
+                  <div
+                    className="m20"
+                    style={{
+                      color: '#5d627b',
+                      background: '#EFEFEF',
+                      borderTop: 'solid 5px #5d627b',
+                      boxShadow: '0 3px 5px rgba(0, 0, 0, 0.22)',
+                      minHeight: '65vh',
+                      maxWidth: 'calc(100vw - 40px - 4rem)',
+                      overflowY: 'auto',
+                      marginBottom: '8rem',
+                      marginRight: '4rem',
+                    }}
+                  >
+                    <Markdown source={note.content} />
+                  </div>
                 )}
               </>
             )}
@@ -386,17 +393,28 @@ class NotePage extends Component<Props> {
         {currentTab === 'vocabulary' && (
           <>
             {_.isEmpty(note?.vocabulary) ? (
-              <div>please create vocabulary with right + button</div>
+              <TextZone className="m20" text="右の+でvocabulary作成" />
             ) : (
-              <div style={{ backgroundColor: 'white', display: 'inline-block' }}>
+              <div
+                className="m20"
+                style={{
+                  backgroundColor: 'white',
+                  display: 'inline-block',
+                  maxWidth: 'calc(100vw - 40px - 4rem)',
+                  //overflowX: 'auto',
+                }}
+              >
                 <ReactDataSheet
                   data={serializedVocabulary}
                   valueRenderer={(cell: any, r: number, c: number) => {
-                    cell.className = this.state.hideMode && c === 1 ? 'left' : ''
-                    cell.width = 200
+                    cell.className =
+                      (this.state.hideMode && 0 < r && c === 1 ? 'right' : '') + ' limit'
+                    // widthはmax-widthで指定する必要があり、プロパティはないため、classNameで指定
+                    // cell.width = 'calc((100vw - 40px - 4rem)/2)'
+                    cell.overflow = 'clip'
                     return cell.value
                   }}
-                  onCellsChanged={changes => {
+                  onCellsChanged={(changes) => {
                     this.handleChangeVocabulary(changes)
                   }}
                 />
@@ -408,7 +426,7 @@ class NotePage extends Component<Props> {
         {currentTab === 'codepen' && (
           <>
             {_.isEmpty(note?.codepenUrl) ? (
-              <div>please input codepen'URL with right + button</div>
+              <TextZone className="m20" text="右の+でcodepen作成" />
             ) : (
               <>
                 <div>
@@ -433,6 +451,7 @@ const mapStateToProps = (state: any) => ({
 const mapDispatchToProps = {
   saveToStore,
   openModal,
+  openToast,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(NotePage)

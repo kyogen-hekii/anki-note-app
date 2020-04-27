@@ -1,6 +1,7 @@
 import { firebaseDb, firebaseAuth } from '../firebase'
 import { pascalize } from 'humps'
-import _ from 'lodash'
+import firebase from 'firebase'
+import { addErrorMessage } from '../containers/Error'
 
 export const getUser = (userId: number) => {
   const user = {
@@ -30,7 +31,7 @@ export const REALgetUser = (userId: number) => {
 const TABLE_CATEGORIES = 'categories'
 export const getCategories = async () => {
   const categoryRef = firebaseDb.collection(TABLE_CATEGORIES)
-  return categoryRef.get().then(ss => ss.docs.map(e => e.data()))
+  return categoryRef.get().then((ss) => ss.docs.map((e) => e.data()))
 }
 /**
  * create: 存在する場合上書きしない
@@ -47,7 +48,7 @@ export const createCategory = async (category: any) => {
   categoryRef
     .doc(category.label)
     .set(category)
-    .catch(e => console.log(e))
+    .catch((e) => addErrorMessage('データベースエラー'))
 }
 // #endregion
 
@@ -55,15 +56,15 @@ export const createCategory = async (category: any) => {
 const TABLE_NOTES = 'notes'
 export const getNotes = async () => {
   const noteRef = firebaseDb.collection(TABLE_NOTES)
-  return noteRef.get().then(ss => ss.docs.map(e => e.data()))
+  return noteRef.get().then((ss) => ss.docs.map((e) => e.data()))
 }
 export const getNotesByCategoryId = async (categoryId: number) => {
   const noteRef = firebaseDb.collection(TABLE_NOTES).where('categoryId', '==', Number(categoryId))
-  return noteRef.get().then(ss => ss.docs.map(e => e.data()))
+  return noteRef.get().then((ss) => ss.docs.map((e) => e.data()))
 }
 export const getNote = async (noteId: number) => {
   const noteRef = firebaseDb.collection(TABLE_NOTES).where('id', '==', Number(noteId))
-  return noteRef.get().then(ss => ss.docs.map(e => e.data()))
+  return noteRef.get().then((ss) => ss.docs.map((e) => e.data()))
 }
 /**
  * create: 存在する場合上書きしない
@@ -83,7 +84,7 @@ export const createNote = async (note: any, argCategoryName?: string) => {
     noteRef
       .doc(docName)
       .set(note)
-      .catch(e => console.log(e))
+      .catch((e) => addErrorMessage('データベースエラー'))
 }
 export const setNote = async (note: any, argCategoryName?: string) => {
   const noteRef = firebaseDb.collection(TABLE_NOTES)
@@ -92,7 +93,25 @@ export const setNote = async (note: any, argCategoryName?: string) => {
     noteRef
       .doc(docName)
       .set(note)
-      .catch(e => console.log(e))
+      .catch((e) => addErrorMessage('データベースエラー'))
+}
+export const updateNoteVocabulary = async (
+  note: any,
+  vocabularyRow: any,
+  rowIndex: number,
+  argCategoryName?: string,
+) => {
+  const noteRef = firebaseDb.collection(TABLE_NOTES)
+  const docName = await getNoteDocName(note, argCategoryName)
+  const noteDoc = noteRef && noteRef.doc(docName)
+  //const fieldName = `vocabulary.${rowIndex}`
+
+  const newNote = {} as typeof note
+  Object.assign(newNote, note)
+  newNote.vocabulary[rowIndex] = vocabularyRow
+  noteDoc.update({
+    vocabulary: newNote.vocabulary,
+  })
 }
 export const deleteNote = async (note: any, argCategoryName?: string) => {
   const noteRef = firebaseDb.collection(TABLE_NOTES)
@@ -101,7 +120,7 @@ export const deleteNote = async (note: any, argCategoryName?: string) => {
     noteRef
       .doc(docName)
       .delete()
-      .catch(e => console.log(e))
+      .catch((e) => addErrorMessage('データベースエラー'))
 }
 const getNoteDocName = async (note: any, argCategoryName?: string) => {
   let categoryName = argCategoryName
@@ -110,8 +129,8 @@ const getNoteDocName = async (note: any, argCategoryName?: string) => {
     const catData = await categoryRef
       .where('id', '==', note.categoryId)
       .get()
-      .then(ss => ss.docs.map(e => e.data()))
-    categoryName = catData.find(e => e)?.label.toString()
+      .then((ss) => ss.docs.map((e) => e.data()))
+    categoryName = catData.find((e) => e)?.label.toString()
   }
   const authorName = note?.author || ''
   const docName = `${categoryName}-${pascalize(note.title)}${authorName ? '@' : ''}${authorName}`
@@ -129,20 +148,21 @@ export const register = async (userName: string, email: string, password: string
   if (firebaseAuth.currentUser) {
     await logout()
   }
-  await firebaseAuth
+  return await firebaseAuth
     .createUserWithEmailAndPassword(email, password)
-    .then(() => {
+    .then(async () => {
       console.log('registered')
+      const user = await login(email, password)
+      if (user !== null) {
+        await updateUserInfo(user, userName)
+      }
+      return user
     })
-    .catch(error => {
+    .catch((error) => {
+      addErrorMessage('データベースエラー')
       console.log(error.code, error.message)
+      return null
     })
-
-  const user = await login(email, password)
-  if (user !== null) {
-    await updateUserInfo(user, userName)
-  }
-  return user
 }
 export const login = async (email: string, password: string) => {
   if (firebaseAuth.currentUser) {
@@ -153,8 +173,14 @@ export const login = async (email: string, password: string) => {
     .then(() => {
       console.log('logined', firebaseAuth.currentUser)
     })
-    .catch(error => {
-      console.log(error.code, error.message)
+    .catch((error) => {
+      if (['auth/invalid-email', 'auth/wrong-password'].some((err) => err === error.code)) {
+        console.log('login failed')
+        addErrorMessage('メールアドレス、またはパスワードが間違っています')
+      } else {
+        addErrorMessage('データベースエラー')
+        console.log(error.code, error.message)
+      }
     })
   return firebaseAuth.currentUser
 }
@@ -164,7 +190,8 @@ export const logout = async () => {
     .then(() => {
       console.log('log out')
     })
-    .catch(error => {
+    .catch((error) => {
+      addErrorMessage('データベースエラー')
       console.log(error.code, error.message)
     })
 }
@@ -182,11 +209,12 @@ export const updateUserInfo = async (user: firebase.User, userName: string) => {
         .updateProfile({
           displayName: userName,
         })
-        .catch(error => {
+        .catch((error) => {
+          addErrorMessage('データベースエラー')
           console.log(error.code, error.message)
         })
     })
-    .catch(e => console.log(e))
+    .catch((e) => console.log(e))
   return user
 }
 export const existsUserName = async (userName: string) => {
@@ -194,7 +222,7 @@ export const existsUserName = async (userName: string) => {
   const result = await userInfoRef
     .where('displayName', '==', userName)
     .get()
-    .then(ss => ss.docs.map(e => e.data()))
+    .then((ss) => ss.docs.map((e) => e.data()))
   if (result.length !== 0) {
     return true
   }

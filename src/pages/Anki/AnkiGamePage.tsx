@@ -2,11 +2,11 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { openModal } from '../../reducers/modal'
 import { saveToStore } from '../../utils/createVariantReducer'
-import { Link } from 'react-router-dom'
 import _ from 'lodash'
 import 'react-datasheet/lib/react-datasheet.css'
-import Tabs from '../../components/Tabs'
 import { getNotesByCategoryId, getNote } from '../../api/queries'
+import TextZone from '../../components/TextZone'
+import CommonButton from '../../components/CommonButton'
 
 type Props = {
   history: any
@@ -21,6 +21,7 @@ class AnkiGamePage extends Component<Props> {
   state: any = {
     isQuestionView: true,
     shuffledCard: [],
+    isLoaded: false,
   }
   tabs: any = ['NoteDeck', 'CategoryDeck']
   // #endregion
@@ -46,7 +47,8 @@ class AnkiGamePage extends Component<Props> {
     // shuffleする
     const shuffledCard = _.shuffle(sortedCard)
     this.setState({ shuffledCard })
-    this.props.saveToStore('page', 'shuffledCard', shuffledCard)
+    await this.props.saveToStore('page', 'shuffledCard', shuffledCard)
+    this.setState({isLoaded: true})
   }
   // #endregion
 
@@ -70,12 +72,16 @@ class AnkiGamePage extends Component<Props> {
   }
   // #region render
   render() {
-    const { category, note } = this.props.selectedData
-    const { categoryId, noteId } = this.props.match.params
-    const { isQuestionView, shuffledCard } = this.state
-    // console.log('match: ', this.props.match)
+    const { isQuestionView, shuffledCard, isLoaded } = this.state
+    if(!isLoaded){
+      return null
+    }
     if (!shuffledCard || _.isEmpty(shuffledCard)) {
-      return <>finished</>
+      return (
+        <div className="m20">
+          <TextZone text="end" />
+        </div>
+      )
     }
     return (
       <div style={{ display: 'flex', flexFlow: 'column' }}>
@@ -93,28 +99,22 @@ class AnkiGamePage extends Component<Props> {
           <span>{isQuestionView ? shuffledCard[0].left : shuffledCard[0].right}</span>
         </div>
         {isQuestionView ? (
-          <>
-            <button type="button" style={{ margin: 20 }} onClick={this.handleClickAnswer}>
-              answer
-            </button>
-          </>
+          <div style={{display: 'flex', justifyContent: 'center'}}>
+            <CommonButton className="mb20" style={{ margin: 20, width: '70vw', backgroundColor: '#A8DBA8' }} onClick={this.handleClickAnswer} label="answer" />
+          </div>
         ) : (
           <>
             <div style={{ display: 'flex', width: '100%' }}>
-              <button
-                type="button"
-                style={{ margin: 20, width: '100vw' }}
+              <CommonButton
+                style={{ margin: 20, width: '100vw', backgroundColor: '#A8DBA8' }}
                 onClick={this.handleClickOk}
-              >
-                OK
-              </button>
-              <button
-                type="button"
-                style={{ margin: 20, width: '100vw' }}
+                label="OK"
+              />
+              <CommonButton
+                style={{ margin: 20, width: '100vw', backgroundColor: '#A8DBA8' }}
                 onClick={this.handleClickNg}
-              >
-                NG
-              </button>
+                label="NG"
+              />
             </div>
           </>
         )}
