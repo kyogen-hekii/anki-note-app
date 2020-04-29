@@ -276,7 +276,7 @@ class NotePage extends Component<Props> {
       this.props.openToast('すでに存在します')
       return
     }
-    this.props.openModal(SetCodepenModal, { height: 60 })
+    this.props.openModal(SetCodepenModal, { height: 100 })
   }
   private codepenExportButtonClick = () => {
     const { note } = this.props.selectedData
@@ -357,7 +357,7 @@ class NotePage extends Component<Props> {
                       borderTop: 'solid 5px #5d627b',
                       boxShadow: '0 3px 5px rgba(0, 0, 0, 0.22)',
                       minHeight: '65vh',
-                      maxWidth: 'calc(100vw - 40px - 4rem)',
+                      width: 'calc(100vw - 40px - 4rem)',
                       overflowY: 'auto',
                       marginBottom: '8rem',
                       marginRight: '4rem',
@@ -377,7 +377,7 @@ class NotePage extends Component<Props> {
                       borderTop: 'solid 5px #5d627b',
                       boxShadow: '0 3px 5px rgba(0, 0, 0, 0.22)',
                       minHeight: '65vh',
-                      maxWidth: 'calc(100vw - 40px - 4rem)',
+                      width: 'calc(100vw - 40px - 4rem)',
                       overflowY: 'auto',
                       marginBottom: '8rem',
                       marginRight: '4rem',

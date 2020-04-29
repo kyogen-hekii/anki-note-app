@@ -34,3 +34,4 @@ src/react-app-env.d.ts
 src/firebase/config.ts
 src/firebase/config.json
 service-account-file.json
+firestore.rules

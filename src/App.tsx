@@ -16,6 +16,7 @@ import Modal from './containers/Modal'
 import Toast from './containers/Toast'
 import Error from './containers/Error'
 import AnkiPrivateGamePage from './pages/Anki/AnkiPrivateGamePage'
+import AboutPage from './pages/About/AboutPage'
 
 const store = configureStore()
 
@@ -52,7 +53,7 @@ function App() {
             <Route exact path="/anki" component={AnkiPage} />
           </Switch>
           <Switch>
-            <Route exact path="/profile" component={DummyPage} />
+            <Route exact path="/about" component={AboutPage} />
           </Switch>
           <PageFooter />
           <Modal />

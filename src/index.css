@@ -96,6 +96,7 @@ textarea {
 
 /* grid */
 .limit {
+  min-width: calc(((100vw - 40px) - 4rem) / 2);
   max-width: calc(((100vw - 40px) - 4rem) / 2);
 }
 
@@ -114,4 +115,11 @@ textarea {
 .right.read-only.selected {
   color: black !important;
   background-color: red !important;
+}
+
+/* markdown */
+.markdown pre code {
+  overflow: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }

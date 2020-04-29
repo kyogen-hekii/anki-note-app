@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
 import _ from 'lodash'
 import SiteLogo from '../../../assets/svg/logo.svg'
 import { openModal } from '../../../reducers/modal'
@@ -56,6 +56,14 @@ const PageHeader = ({ history, auth, selectedData, openModal, openToast, saveToS
           </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Link
+            className="mr5"
+            to="/about"
+            style={{ textDecoration: 'underline', fontSize: '1.3rem', fontWeight: 'bold' }}
+          >
+            AboutApp
+          </Link>
+
           <ToggleButton
             isPrivate={isPrivate}
             onClick={() => {

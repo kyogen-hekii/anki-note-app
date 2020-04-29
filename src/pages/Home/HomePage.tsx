@@ -133,7 +133,11 @@ class HomePage extends Component<Props> {
               )
             })
         ) : (
-          <TextZone text="カテゴリーを選んでください" />
+          <TextZone
+            text={`上でカテゴリーを選んでください
+            カテゴリーとノートを選択すると、
+            下のNOTEとANKIを選択できます。`}
+          />
         )}
       </div>
     )
