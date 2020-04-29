@@ -31,7 +31,7 @@ class NotePage extends Component<Props> {
   state: any = {
     currentTab: 'memo',
     isInputViewShown: true,
-    isChanged: false,
+    createdNewMemo: false,
     hideMode: false,
   }
 
@@ -138,6 +138,7 @@ class NotePage extends Component<Props> {
       ...note,
       content: 'please input markdown memo',
     })
+    this.setState({ createdNewMemo: true })
   }
   private memoExportButtonClick = () => {
     const { note } = this.props.selectedData
@@ -320,7 +321,7 @@ class NotePage extends Component<Props> {
   // #region render
   render() {
     const { category, note } = this.props.selectedData
-    const { isInputViewShown, currentTab } = this.state
+    const { isInputViewShown, currentTab, createdNewMemo } = this.state
     const serializedVocabulary = serializeVocabulary(note?.vocabulary, this.isEditable())
 
     if (_.isEmpty(category) || _.isEmpty(note)) {
@@ -344,7 +345,7 @@ class NotePage extends Component<Props> {
 
         {currentTab === 'memo' && (
           <>
-            {!note?.content ? (
+            {!note?.content && !createdNewMemo ? (
               <TextZone className="m20" text="右の+でmemo作成" />
             ) : (
               <>

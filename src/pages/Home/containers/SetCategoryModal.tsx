@@ -39,6 +39,7 @@ class SetModal extends Component<Props> {
     this.props.closeModal()
   }
   handleCategoryChange = (e: any) => {
+    e.preventDefault()
     const { value } = e.target
     this.setState({ categoryName: value })
   }
@@ -46,18 +47,16 @@ class SetModal extends Component<Props> {
   render() {
     const { codepenUrl } = this.state
     return (
-      <div className={`align-center`}>
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <input
-            className="mb10"
-            type="text"
-            value={codepenUrl}
-            placeholder="e.g.) React, Vue.js..."
-            onChange={this.handleCategoryChange}
-            autoFocus
-          />
-          <CommonButton className="mb10" onClick={this.handleClick} label="作成" />
-        </div>
+      <div className={`align-center`} style={{ display: 'flex', flexDirection: 'column' }}>
+        <input
+          className="mb10"
+          type="text"
+          value={codepenUrl}
+          placeholder="e.g.) React, Vue.js..."
+          onChange={this.handleCategoryChange}
+          autoFocus
+        />
+        <CommonButton className="mb10" onClick={this.handleClick} label="作成" />
       </div>
     )
   }
