@@ -21,3 +21,17 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# etc
+# dev before release
+# $ git rm --cached 
+package-lock.json
+src/react-app-env.d.ts
+
+# firebase
+.firebase/
+.firebaserc
+src/firebase/config.ts
+src/firebase/config.json
+service-account-file.json
+firestore.rules

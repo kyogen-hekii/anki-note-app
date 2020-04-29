@@ -1,13 +1,125 @@
+html {
+  font-size: 62.5%;
+  /* =10px */
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: 1.4rem;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+/* m */
+.mr5 {
+  margin-right: 5px;
+}
+
+.mb8 {
+  margin-bottom: 8px;
+}
+
+.m10 {
+  margin: 10px;
+}
+
+.mb10 {
+  margin-bottom: 10px;
+}
+
+.mr10 {
+  margin-right: 10px;
+}
+
+.mh10 {
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+.m20 {
+  margin: 20px;
+}
+
+.mb20 {
+  margin-bottom: 20px;
+}
+
+.mr20 {
+  margin-right: 20px;
+}
+
+/* p */
+.pb16 {
+  padding-bottom: 16px;
+}
+
+.p20 {
+  padding: 20px;
+}
+
+.pv20 {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.align-center {
+  text-align: center;
+}
+
+a,
+a:link,
+a:visited {
+  text-decoration: none;
+}
+
+textarea {
+  width: 100vh;
+  height: 40vh;
+  font-size: 16px;
+  font-family: 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro W3', 'メイリオ', Meiryo, 'ＭＳ Ｐゴシック', sans-serif;
+}
+
+.textfont {
+  font-family: 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro W3', 'メイリオ', Meiryo, 'ＭＳ Ｐゴシック', sans-serif;
+}
+
+.touchable {
+  cursor: pointer;
+  user-select: none;
+}
+
+/* grid */
+.limit {
+  min-width: calc(((100vw - 40px) - 4rem) / 2);
+  max-width: calc(((100vw - 40px) - 4rem) / 2);
+}
+
+.right {
+  color: white;
+}
+
+.right.selected {
+  color: black;
+}
+
+.right.read-only {
+  color: whitesmoke !important;
+}
+
+.right.read-only.selected {
+  color: black !important;
+  background-color: red !important;
+}
+
+/* markdown */
+.markdown pre code {
+  overflow: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
