@@ -3,7 +3,6 @@ import Select from 'react-select'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 
-import SimpleFetch from '../../api/SimpleFetch'
 import { getCategories, getNotes, deleteNote } from '../../api/queries'
 import NoteItem from './components/NoteItem'
 import { openModal } from '../../reducers/modal'
@@ -74,7 +73,7 @@ class HomePage extends Component<Props> {
 
   // #region private method
   private initCategoryOptions = async () => {
-    const categoryOptions = await SimpleFetch(getCategories())
+    const categoryOptions = await getCategories()
     const appendixOption = {
       id: this.CREATE_ID,
       value: 'add_category',
@@ -83,7 +82,7 @@ class HomePage extends Component<Props> {
     this.props.saveToStore('page', 'categoryOptions', categoryOptions.concat(appendixOption))
   }
   private initNotes = async () => {
-    const notes = await SimpleFetch(getNotes())
+    const notes = await getNotes()
     this.props.saveToStore('page', 'notes', notes)
   }
   // #endregion
