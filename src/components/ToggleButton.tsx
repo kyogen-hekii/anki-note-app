@@ -1,5 +1,6 @@
 import React from 'react'
 import MiniButton from './MiniButton'
+import { primary, dark } from '../utils/colors'
 
 type Props = { isPrivate: boolean; onClick: any }
 
@@ -11,8 +12,8 @@ export default ({ isPrivate, onClick }: Props) => {
           onClick={onClick}
           className="touchable"
           style={{
-            backgroundColor: isPrivate ? '#FCAA00' : '#757575',
-            color: isPrivate ? '#757575' : 'white',
+            backgroundColor: isPrivate ? primary : dark,
+            color: isPrivate ? dark : 'white',
           }}
         >
           Private
