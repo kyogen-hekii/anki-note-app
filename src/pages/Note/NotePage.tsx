@@ -186,6 +186,7 @@ class NotePage extends Component<Props> {
   }
   vocabularyChangeButtonClick = () => {
     const { hideMode } = this.state
+    this.props.openToast(!hideMode ? 'クイズモード' : '解除')
     this.setState({ hideMode: !hideMode })
   }
   // #endregion
@@ -357,8 +358,8 @@ class NotePage extends Component<Props> {
                       background: 'white',
                       borderTop: 'solid 5px #5d627b',
                       boxShadow: '0 3px 5px rgba(0, 0, 0, 0.22)',
-                      minHeight: '65vh',
-                      width: 'calc(100vw - 40px - 4rem)',
+                      minHeight: '64vh',
+                      width: 'calc(99vw - 40px - 4rem)',
                       overflowY: 'auto',
                       marginBottom: '8rem',
                       marginRight: '4rem',
@@ -377,8 +378,8 @@ class NotePage extends Component<Props> {
                       background: '#EFEFEF',
                       borderTop: 'solid 5px #5d627b',
                       boxShadow: '0 3px 5px rgba(0, 0, 0, 0.22)',
-                      minHeight: '65vh',
-                      width: 'calc(100vw - 40px - 4rem)',
+                      minHeight: '64vh',
+                      width: 'calc(99vw - 40px - 4rem)',
                       overflowY: 'auto',
                       marginBottom: '8rem',
                       marginRight: '4rem',

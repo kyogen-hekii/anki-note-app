@@ -9,6 +9,7 @@ import HomeImgOn from '../../../assets/svg/home-on.svg'
 import NoteImg from '../../../assets/svg/note.svg'
 import NoteImgOn from '../../../assets/svg/note-on.svg'
 import styled from 'styled-components'
+import { primary } from '../../../utils/colors'
 
 // #region constants
 const DEFAULT_SIZE = 30
@@ -70,19 +71,12 @@ const PageFooter = ({ history, isExistsCategory }: Props) => (
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: '#8CD790',
+            backgroundColor: primary,
             width: '100vw', //すべて100%にしておけば、flexで等分できる
           }}
         >
           <span>
-            <img
-              key={p.id}
-              src={p.logoOn}
-              alt={p.id}
-              width={p.width}
-              height={p.height}
-              style={{}}
-            />
+            <img key={p.id} src={p.logoOn} alt={p.id} width={p.width} height={p.height} />
           </span>
           <span>{p.id}</span>
         </div>
@@ -100,7 +94,7 @@ const PageFooter = ({ history, isExistsCategory }: Props) => (
         >
           <StyledLink to={p.to} canClick={p.clickable(isExistsCategory)} />
           <span>
-            <img src={p.logo} alt={p.id} width={p.width} height={p.height} />
+            {isExistsCategory && <img src={p.logo} alt={p.id} width={p.width} height={p.height} />}
           </span>
           <span>{p.id}</span>
         </div>

@@ -7,6 +7,7 @@ import 'react-datasheet/lib/react-datasheet.css'
 import { getNotesByCategoryId, getNote } from '../../api/queries'
 import TextZone from '../../components/TextZone'
 import CommonButton from '../../components/CommonButton'
+import { base, secondary } from '../../utils/colors'
 
 type Props = {
   history: any
@@ -90,7 +91,7 @@ class AnkiGamePage extends Component<Props> {
           style={{
             margin: 20,
             backgroundColor: 'white',
-            borderLeft: 'solid 6px #79BD9A',
+            borderLeft: `solid 6px ${secondary}`,
             borderBottom: 'solid 2px #dadada',
             width: 'calc(100vw - 40px - 4rem)',
             height: '40vh',
@@ -102,7 +103,7 @@ class AnkiGamePage extends Component<Props> {
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <CommonButton
               className="mb20"
-              style={{ margin: 20, width: '70vw', backgroundColor: '#A8DBA8' }}
+              style={{ margin: 20, width: '70vw', backgroundColor: base }}
               onClick={this.handleClickAnswer}
               label="answer"
             />
@@ -111,12 +112,12 @@ class AnkiGamePage extends Component<Props> {
           <>
             <div style={{ display: 'flex', width: '100%' }}>
               <CommonButton
-                style={{ margin: 20, width: '100vw', backgroundColor: '#A8DBA8' }}
+                style={{ margin: 20, width: '100vw', backgroundColor: base }}
                 onClick={this.handleClickOk}
                 label="OK"
               />
               <CommonButton
-                style={{ margin: 20, width: '100vw', backgroundColor: '#A8DBA8' }}
+                style={{ margin: 20, width: '100vw', backgroundColor: base }}
                 onClick={this.handleClickNg}
                 label="NG"
               />

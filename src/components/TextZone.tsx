@@ -1,5 +1,6 @@
 import React from 'react'
 import Logo from '../assets/svg/logo-no-text.svg'
+import { base } from '../utils/colors'
 
 export default ({ text, className = '' }: { text: string; className?: string }) => {
   return (
@@ -7,8 +8,7 @@ export default ({ text, className = '' }: { text: string; className?: string }) 
       <div
         style={{
           position: 'relative',
-          backgroundColor: '#A8DBA8',
-
+          backgroundColor: base,
           lineHeight: 2,
           padding: '1.5em',
           width: window.innerWidth / 2,

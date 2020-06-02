@@ -10,6 +10,7 @@ import SetLoginModal from '../containers/SetLoginModal'
 import SetProfileModal from '../containers/SetProfileModal'
 import UserIcon from '../../../components/UserIcon'
 import ToggleButton from '../../../components/ToggleButton'
+import { base } from '../../../utils/colors'
 
 type Props = {
   history: any
@@ -32,7 +33,7 @@ const PageHeader = ({ history, auth, selectedData, openModal, openToast, saveToS
 
   return (
     <>
-      <div style={{ display: 'flex', backgroundColor: '#A8DBA8', justifyContent: 'space-between' }}>
+      <div style={{ display: 'flex', backgroundColor: base, justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <img
             className="mr5 touchable"
@@ -42,7 +43,7 @@ const PageHeader = ({ history, auth, selectedData, openModal, openToast, saveToS
             width={50}
             height={50}
           />
-          <span style={{ fontSize: '1.7rem', color: 'white' }}>
+          <span style={{ fontSize: '1.7rem' }}>
             <span className="mr5 touchable" onClick={() => goToHomePage(true)}>
               {category?.label}
             </span>

@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { TransformScaleButton } from './TransformScaleButton'
+import { light } from '../utils/colors'
 
 const RelativeWrapper = styled.div`
   position: relative;
@@ -17,7 +18,7 @@ const VerticalBar = styled.div`
 
 const OperationButton = styled(TransformScaleButton)<{ isInvalid?: boolean }>`
   border-radius: 15px 0 0 15px;
-  background-color: #fcaa00;
+  background-color: ${light};
   height: 3rem;
 `
 
