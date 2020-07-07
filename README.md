@@ -4,8 +4,8 @@
 
 ログインなしでもご利用いただけますので、お忙しい場合はそのまま閲覧ください。
 
-[アプリのリンク]('https://github.com/kyogen-hekii/anki-note-app')
-https://github.com/kyogen-hekii/anki-note-app
+[アプリのリンク]('https://anki-note.web.app')
+https://anki-note.web.app
 
 ## 使用技術
 
